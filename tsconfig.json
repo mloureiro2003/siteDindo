@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "ES2024",
+    "jsx": "react-jsx",
+    "checkJs": false,
+    "experimentalDecorators": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strict": true,
+    "sourceMap": true,
+    "types": ["node"],
+    "paths": {
+      "@models/*": ["./models/*"],
+      "@repositories/*": ["./repositories/*"],
+      "@controllers/*": ["./controllers/*"],
+      "@services/*": ["./services/*"]
+    }
+  }
+}
