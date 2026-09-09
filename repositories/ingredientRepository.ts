@@ -1,7 +1,7 @@
-import { File } from "@services/file";
-import { Code } from "@models/code";
-import { Ingredient } from "@models/ingredient" 
-import { FoodGroup } from "@models/foodGroup"
+import { File } from "../services/file.js";
+import { Code } from "../models/code.js";
+import { Ingredient } from "../models/ingredient" 
+import { FoodGroup } from "../models/foodGroup"
 
 export class IngredientRepository {
     private static FILE_PATH = "ingredient.json";

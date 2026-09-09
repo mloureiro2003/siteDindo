@@ -1,4 +1,4 @@
-import { Code } from "@models/code";
+import { Code } from "../models/code.js";
 
 export class RecipeType {
     constructor(

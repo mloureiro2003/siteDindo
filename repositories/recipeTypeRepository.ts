@@ -1,6 +1,6 @@
-import { File } from "@services/file";
-import { Code } from "@models/code";
-import { RecipeType } from "@models/recipeType"
+import { File } from "../services/file.js";
+import { Code } from "../models/code.js";
+import { RecipeType } from "../models/recipeType"
 
 export class RecipeTypeRepository {
     private static FILE_PATH = "recipeType.json";

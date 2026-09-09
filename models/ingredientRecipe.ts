@@ -1,5 +1,5 @@
-import { MeasuringUnit } from "@models/measuringUnit"
-import { Ingredient } from "@models/ingredient"
+import { MeasuringUnit } from "../models/measuringUnit"
+import { Ingredient } from "../models/ingredient"
 
 export class IngredientRecipe {
     constructor(

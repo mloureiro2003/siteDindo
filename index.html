@@ -2,9 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sitedindo</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"
+        }
+      }
+    </script>
     <style>
       /* Reset e centralização da página */
       body { 
@@ -154,7 +160,7 @@
         <!-- Menu Principal (opções 1 a 5) -->
         <nav>
           <button onclick="showSection('sec-recipes')">1. Receitas</button>
-          <button onclick="showSection('sec-ingrediets')">2. Ingredientes</button>
+          <button onclick="showSection('sec-ingredients')">2. Ingredientes</button>
           <button onclick="showSection('sec-types')">3. Tipos de Receitas</button>
           <button onclick="showSection('sec-units')">4. Unidades de Medida</button>
           <button onclick="showSection('sec-reports')">5. Relatórios / Imprimir</button>
@@ -187,7 +193,7 @@
               </div>
 
               <h4>Ingredientes da Receita</h4>
-              <div id="lista-ingrediets-recipe">
+              <div id="list-ingredients-recipe">
                 <div class="ingredient-row">
                   <input type="text" placeholder="Cód" style="width: 80px;" class="ing-cod">
                   <select class="ing-select" style="flex: 2;" required>
@@ -227,7 +233,7 @@
         </section>
 
         <!-- 2. SEÇÃO DE INGREDIENTES -->
-        <section id="sec-ingrediets" class="section-view">
+        <section id="sec-ingredients" class="section-view">
           <h2>Gestão de Ingredientes</h2>
           <div class="sub-nav">
             <button onclick="showSubView('ing-register')">Cadastrar</button>
@@ -374,6 +380,6 @@
     </div>
     
     <div id="app"></div>
-    <script type="module" src="/script.ts"></script>
+    <script type="module" src="./dist/script.js"></script>
   </body>
 </html>

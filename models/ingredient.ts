@@ -1,5 +1,5 @@
-import { Code } from "@models/code";
-import { FoodGroup } from "@models/foodGroup"
+import { Code } from "../models/code.js";
+import { FoodGroup } from "../models/foodGroup"
 
 export class Ingredient {
     constructor(

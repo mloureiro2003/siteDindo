@@ -1,6 +1,6 @@
-import { RecipeType } from "@models/recipeType"
-import { IngredientRecipe } from "@models/ingredientRecipe"
-import { Code } from "@models/code";
+import { RecipeType } from "../models/recipeType"
+import { IngredientRecipe } from "../models/ingredientRecipe"
+import { Code } from "../models/code.js";
 
 export class Recipe {
     constructor(

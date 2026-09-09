@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { MeasuringUnitRepository } from "./repositories/measuringUnitRepository.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDD1ZbaF-yECjINVeTRvYvGx1MBgWDLVoc",
@@ -15,7 +16,6 @@ function showSection(sectionId: string): void {
   document.querySelectorAll<HTMLElement>('.section-view').forEach((sec) => {
     sec.classList.remove('active');
   });
-
   const targetSection = document.getElementById(sectionId);
   if (targetSection) {
     targetSection.classList.add('active');
@@ -35,7 +35,6 @@ function showSubView(subViewId: string): void {
 function addIngredientRow(): void {
   const container = document.getElementById('list-ingredients-recipe');
   if (!container) return;
-
   const newRow = document.createElement('div');
   newRow.className = 'ingredient-row';
   newRow.innerHTML = `
@@ -44,12 +43,12 @@ function addIngredientRow(): void {
       <option value="">Selecione o ingrediente...</option>
     </select>
     <input type="number" step="0.01" placeholder="Qtd" style="width: 100px;" class="ing-qtd" required>
-    <select class="ing-unidade" style="flex: 1;" required>
+    <select class="ing-unit" style="flex: 1;" required>
       <option value="">Unidade...</option>
     </select>
     <button type="button" onclick="removeIngredientRow(this)">X</button>
-    `;
-    container.appendChild(newRow);
+  `;
+  container.appendChild(newRow);
 }
 
 function removeIngredientRow(btn: HTMLButtonElement): void {
@@ -57,7 +56,7 @@ function removeIngredientRow(btn: HTMLButtonElement): void {
 }
 
 function generateReport(type: string): void {
-  const area = document.getElementById('area-report');
+  const area = document.getElementById('area-relatorio');
   if (area) {
     area.innerHTML = `<h3>Relatório ${type.toUpperCase()}</h3><p>Conteúdo do relatório gerado dinamicamente via JS...</p>`;
   }
@@ -67,13 +66,9 @@ function generateReport(type: string): void {
 (window as any).showSubView = showSubView;
 (window as any).addIngredientRow = addIngredientRow;
 (window as any).removeIngredientRow = removeIngredientRow;
-(window as any).gerarRelatorio = generateReport;
+(window as any).generateReport = generateReport;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Instancia repositórios e controllers
   const unitRepo = new MeasuringUnitRepository();
-  const unitController = new UnidadeMedidaController(unitRepo);
-
-  // Renderização inicial
-  unitController.renderTable();
+  console.log("Measuring Units loaded:", unitRepo.getAll());
 });
