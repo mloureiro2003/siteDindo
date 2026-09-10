@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { MeasuringUnitRepository } from "./repositories/measuringUnitRepository.js";
+import Quill from "quill";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDD1ZbaF-yECjINVeTRvYvGx1MBgWDLVoc",
@@ -69,6 +70,69 @@ function generateReport(type: string): void {
 (window as any).generateReport = generateReport;
 
 document.addEventListener('DOMContentLoaded', () => {
+  // -------------------------------------------------------------
+  // Quill Editor Initialization
+  // -------------------------------------------------------------
+  let quillEditor: InstanceType<typeof Quill> | null = null;
+  const editorContainer = document.getElementById('editor-recipe-steps');
+  
+  if (editorContainer) {
+    quillEditor = new Quill('#editor-recipe-steps', {
+      theme: 'snow',
+      placeholder: 'Descreva o passo a passo da receita...',
+      modules: {
+        toolbar: [
+          [{ 'header': [1, 2, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['clean']
+        ]
+      }
+    });
+  }
+
+  // -------------------------------------------------------------
+  // Prevent form submission & handles data extraction
+  // -------------------------------------------------------------
+  const forms = document.querySelectorAll<HTMLFormElement>('form');
+  forms.forEach((form) => {
+    form.addEventListener('submit', (event: SubmitEvent) => {
+      event.preventDefault();
+
+      if (form.id === 'form-recipe' && quillEditor) {
+        const passoAPassoHTML = quillEditor.root.innerHTML;
+        const passoAPassoTexto = quillEditor.getText().trim();
+
+        console.log("Saving recipe data...");
+        console.log("Conteúdo HTML salvo:", passoAPassoHTML);
+        console.log("Texto puro salvo:", passoAPassoTexto);
+
+        form.reset();
+        quillEditor.setText('');
+      } else {
+        console.log(`Saving data for form #${form.id}`);
+        form.reset();
+      }
+    });
+  });
+
+  // -------------------------------------------------------------
+  // Highlight inputs red if left empty (on-the-fly)
+  // -------------------------------------------------------------
+  const textInputs = document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[type="text"], textarea');
+  textInputs.forEach((input) => {
+    input.addEventListener('input', () => {
+      if (input.hasAttribute('required') && input.value.trim() === '') {
+        input.style.borderColor = '#bc4749'; // Red border for error
+      } else {
+        input.style.borderColor = '#cccccc'; // Default border color
+      }
+    });
+  });
+
+  // -------------------------------------------------------------
+  // Repository initializations
+  // -------------------------------------------------------------
   const unitRepo = new MeasuringUnitRepository();
   console.log("Measuring Units loaded:", unitRepo.getAll());
 });
