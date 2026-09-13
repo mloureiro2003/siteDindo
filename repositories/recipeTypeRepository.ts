@@ -1,20 +1,40 @@
-import { File } from "../services/file.js";
+import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { Code } from "../models/code.js";
 import { RecipeType } from "../models/recipeType"
+import { FoodGroup } from "../models/foodGroup.js";
 
 export class RecipeTypeRepository {
-    private static FILE_PATH = "recipeType.json";
+    private db: Firestore;
+    private collectionName = "foodGroup";
 
-    getAll(): RecipeType[]{
-        const rawData: { value: string, code: Code}[] = File.getFileContent(RecipeTypeRepository.FILE_PATH)
-        return rawData.map(item => new RecipeType(item.value, item.code));
+    constructor(db: Firestore) {
+        this.db = db;
+    }
+
+    async getAll(): Promise<RecipeType[]> {
+        const colRef = collection(this.db, this.collectionName);
+        const snapshot = await getDocs(colRef);
+
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return new RecipeType(data.value, data.code);
+        });
     }
     
-    create(value: string, code: Code): RecipeType{
-        return new RecipeType(value, code);
+    async create(value: string, code: Code): Promise<RecipeType>{
+        const recipeType = new RecipeType(value, code);
+        const docRef = doc(this.db, this.collectionName, code.toString());
+    
+        await setDoc(docRef, {
+            value, 
+            code
+        })
+
+        return recipeType;
     }
 
-    delete(recipetype: RecipeType[], target: RecipeType): RecipeType[] {
-        return recipetype.filter(recipetype => recipetype.getCode() !== target.getCode());
+    async delete(target: RecipeType): Promise<void> {
+        const docRef = doc(this.db, this.collectionName, target.getCode().toString());
+        await deleteDoc(docRef);
     }
 }

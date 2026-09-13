@@ -9,13 +9,14 @@
     {
       "imports": {
         "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js",
         "quill": "https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm"
       }
     }
-  </script>   
+    </script>
 
     <script type="module" src="./dist/script.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link href="../services/quill.snow.css" rel="stylesheet" />
     <style>
       /* Reset e centralização da página */
       body { 
@@ -254,7 +255,7 @@
 
           <div id="ing-register" class="sub-view">
             <h3>Cadastrar Ingrediente</h3>
-            <form id="form-ingrediente">
+            <form id="form-ingredient">
               <input type="hidden" id="ing-id">
               <div class="form-group">
                 <label for="ing-name">Nome do Ingrediente:</label>
@@ -338,26 +339,26 @@
         <section id="sec-units" class="section-view">
           <h2>Unidades de Medida</h2>
           <div class="sub-nav">
-            <button onclick="showSubView('uni-register')">Cadastrar</button>
-            <button onclick="showSubView('uni-search')">Pesquisar / Alterar / Excluir</button>
+            <button onclick="showSubView('unit-register')">Cadastrar</button>
+            <button onclick="showSubView('unit-search')">Pesquisar / Alterar / Excluir</button>
           </div>
 
-          <div id="uni-register" class="sub-view">
+          <div id="unit-register" class="sub-view">
             <h3>Cadastrar Unidade de Medida</h3>
             <form id="form-unit">
               <div class="form-group">
-                <label for="uni-code">Código (ex: ml):</label>
-                <input type="text" id="uni-code" required>
+                <label for="unit-code">Código (ex: ml):</label>
+                <input type="text" id="unit-code" required>
               </div>
               <div class="form-group">
-                <label for="uni-description">Descrição (ex: mililitros):</label>
-                <input type="text" id="uni-description" required>
+                <label for="unit-description">Descrição (ex: mililitros):</label>
+                <input type="text" id="unit-description" required>
               </div>
               <button type="submit">Salvar Unidade</button>
             </form>
           </div>
 
-          <div id="uni-search" class="sub-view" style="display:none;">
+          <div id="unit-search" class="sub-view" style="display:none;">
             <h3>Lista de Unidades de Medida</h3>
             <table>
               <thead>
@@ -392,6 +393,5 @@
     </div>
     
     <div id="app"></div>
-    <script type="module" src="./dist/script.js"></script>
   </body>
 </html>

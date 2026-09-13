@@ -1,18 +1,9 @@
-import { initializeApp } from "firebase/app";
 import { MeasuringUnitRepository } from "./repositories/measuringUnitRepository.js";
 import Quill from "quill";
+import { db } from "./services/firebase.js";
+import { initUnitForm } from "./controllers/measuringUnitController.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDD1ZbaF-yECjINVeTRvYvGx1MBgWDLVoc",
-  authDomain: "sietdindo.firebaseapp.com",
-  projectId: "sietdindo",
-  storageBucket: "sietdindo.firebasestorage.app",
-  messagingSenderId: "812370145647",
-  appId: "1:812370145647:web:d0b3ea0684a87b4d31789a"
-};
-
-const app = initializeApp(firebaseConfig);
-
+// Navigation Handlers
 function showSection(sectionId: string): void {
   document.querySelectorAll<HTMLElement>('.section-view').forEach((sec) => {
     sec.classList.remove('active');
@@ -33,9 +24,11 @@ function showSubView(subViewId: string): void {
   }
 }
 
+// Dynamic Recipe Row Handlers
 function addIngredientRow(): void {
   const container = document.getElementById('list-ingredients-recipe');
   if (!container) return;
+
   const newRow = document.createElement('div');
   newRow.className = 'ingredient-row';
   newRow.innerHTML = `
@@ -63,6 +56,7 @@ function generateReport(type: string): void {
   }
 }
 
+// Expose navigation functions to window object for inline HTML handlers
 (window as any).showSection = showSection;
 (window as any).showSubView = showSubView;
 (window as any).addIngredientRow = addIngredientRow;
@@ -70,12 +64,10 @@ function generateReport(type: string): void {
 (window as any).generateReport = generateReport;
 
 document.addEventListener('DOMContentLoaded', () => {
-  // -------------------------------------------------------------
-  // Quill Editor Initialization
-  // -------------------------------------------------------------
+  // 1. Initialize Quill Editor first, so the recipe controller can read its content
   let quillEditor: InstanceType<typeof Quill> | null = null;
   const editorContainer = document.getElementById('editor-recipe-steps');
-  
+
   if (editorContainer) {
     quillEditor = new Quill('#editor-recipe-steps', {
       theme: 'snow',
@@ -84,55 +76,33 @@ document.addEventListener('DOMContentLoaded', () => {
         toolbar: [
           [{ 'header': [1, 2, false] }],
           ['bold', 'italic', 'underline'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
           ['clean']
         ]
       }
     });
   }
 
-  // -------------------------------------------------------------
-  // Prevent form submission & handles data extraction
-  // -------------------------------------------------------------
-  const forms = document.querySelectorAll<HTMLFormElement>('form');
-  forms.forEach((form) => {
-    form.addEventListener('submit', (event: SubmitEvent) => {
-      event.preventDefault();
+  // 2. Initialize all form handlers
+  initUnitForm();
 
-      if (form.id === 'form-recipe' && quillEditor) {
-        const passoAPassoHTML = quillEditor.root.innerHTML;
-        const passoAPassoTexto = quillEditor.getText().trim();
-
-        console.log("Saving recipe data...");
-        console.log("Conteúdo HTML salvo:", passoAPassoHTML);
-        console.log("Texto puro salvo:", passoAPassoTexto);
-
-        form.reset();
-        quillEditor.setText('');
-      } else {
-        console.log(`Saving data for form #${form.id}`);
-        form.reset();
-      }
-    });
-  });
-
-  // -------------------------------------------------------------
-  // Highlight inputs red if left empty (on-the-fly)
-  // -------------------------------------------------------------
+  // 3. Form Input Validation UI Feedback
   const textInputs = document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[type="text"], textarea');
   textInputs.forEach((input) => {
     input.addEventListener('input', () => {
-      if (input.hasAttribute('required') && input.value.trim() === '') {
-        input.style.borderColor = '#bc4749'; // Red border for error
+      if (input.hasAttribute('required') && input.value.trim() === ''){
+        input.style.borderColor = '#bc4749';
       } else {
-        input.style.borderColor = '#cccccc'; // Default border color
+        input.style.borderColor = '#cccccc';
       }
-    });
-  });
+    })
+  })
 
-  // -------------------------------------------------------------
-  // Repository initializations
-  // -------------------------------------------------------------
-  const unitRepo = new MeasuringUnitRepository();
-  console.log("Measuring Units loaded:", unitRepo.getAll());
+  // 4. Repositories Initialization
+  const uniRepo = new MeasuringUnitRepository(db);
+  unitRepo.getAll()
+    .then((units) => console.log("Measuring Units loaded," units))
+    .catch((error) => console.log("Failed to load measuring units", error));
+
+
 });

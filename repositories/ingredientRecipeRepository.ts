@@ -1,21 +1,41 @@
-import { File } from "../services/file.js";
-import { Code } from "../models/code.js";
+import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { Ingredient } from "../models/ingredient.js";
-import { FoodGroup } from "../models/foodGroup.js";
+import { IngredientRecipe } from "../models/ingredientRecipe.js";
+import { MeasuringUnit } from "../models/measuringUnit.js";
 
 export class IngredientRepository {
-    private static FILE_PATH = "ingredient.json";
+    private db: Firestore;
+    private collectionName = "ingredientRecipe";
 
-    getAll(): Ingredient[] {
-        const rawData: { name: string, foodGroup: FoodGroup, code: Code, synonym?: string }[] = File.getFileContent(IngredientRepository.FILE_PATH);
-        return rawData.map(item => new Ingredient(item.name, item.foodGroup, item.code, item.synonym));
+    constructor(db: Firestore) {
+        this.db = db;
     }
 
-    create(name: string, foodGroup: FoodGroup, code: Code, synonym?: string): Ingredient {
-        return new Ingredient(name, foodGroup, code, synonym);
+    async getAll(): Promise<IngredientRecipe[]> {
+        const colRef = collection(this.db, this.collectionName);
+        const snapshot = await getDocs(colRef);
+
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return new IngredientRecipe(data.ingredient, data.measuringUnit, data.unit);
+        })
     }
 
-    delete(ingredient: Ingredient[], target: Ingredient): Ingredient[] {
-        return ingredient.filter(ing => ing.getCode() !== target.getCode());
+    async create(ingredient: Ingredient, measuringUnit: MeasuringUnit, unit: number): Promise<IngredientRecipe> {
+        const ingredientRecipe = new IngredientRecipe(ingredient, measuringUnit, unit);
+        const docRef = doc(this.db, this.collectionName, ingredient.getCode().toString());
+
+        await setDoc(docRef, {
+            ingredient, 
+            measuringUnit, 
+            unit
+        });
+
+        return ingredientRecipe;
+    }
+
+    async delete(target: IngredientRecipe): Promise<void> {
+        const docRef = doc(this.db, this.collectionName, target.getIngredient().getCode().toString());
+        await deleteDoc(docRef);
     }
 }

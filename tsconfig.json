@@ -9,5 +9,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["script.ts", "repositories/**/*", "models/**/*", "services/**/*"]
+  "include": ["script.ts", "controllers/**/*", "repositories/**/*", "models/**/*", "services/**/*"]
 }

@@ -8,8 +8,12 @@ export class IngredientRecipe {
         private unit: number
     ) {}
 
+    getIngredient(): Ingredient {
+        return this.ingredient;
+    }
+
     getName(): string {
-        return this.ingredient.getName();
+        return this.getIngredient().getName();
     }
 
 

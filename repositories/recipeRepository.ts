@@ -1,22 +1,43 @@
-import { File } from "../services/file.js";
-import { Code } from "../models/code.js";
+import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";import { Code } from "../models/code.js";
 import { RecipeType } from "../models/recipeType.js";
 import { IngredientRecipe } from "../models/ingredientRecipe.js";
 import { Recipe } from "../models/recipe.js";
 
 export class RecipeRepository {
-    private static FILE_PATH = "recipe.json";
+    private db: Firestore;
+    private collectionName = "recipe";
 
-    getAll(): Recipe[] {
-        const rawData: { name: string, code: Code, recipeType: RecipeType, ingredients: IngredientRecipe[], steps: string[] }[] = File.getFileContent(RecipeRepository.FILE_PATH);
-        return rawData.map(item => new Recipe(item.name, item.code, item.recipeType, item.ingredients, item.steps));
+    constructor(db: Firestore) {
+        this.db = db;
     }
 
-    create(name: string, code: Code, recipeType: RecipeType, ingredients: IngredientRecipe[], steps: string[]): Recipe {
-        return new Recipe(name, code, recipeType, ingredients, steps);
+    async getAll(): Promise<Recipe[]> {
+        const colRef = collection(this.db, this.collectionName);
+        const snapshot = await getDocs(colRef);
+
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return new Recipe(data.name, data.code, data.recipeType, data.ingredients, data.steps);
+        })
     }
 
-    delete(recipe: Recipe[], target: Recipe): Recipe[] {
-        return recipe.filter(r => r.getCode() !== target.getCode());
+    async create(name: string, code: Code, recipeType: RecipeType, ingredients: IngredientRecipe[], steps: string[]): Promise<Recipe> {
+        const recipe = new Recipe(name, code, recipeType, ingredients, steps);
+        const docRef = doc(this.db, this.collectionName, code.toString());
+
+        await setDoc(docRef, {
+            name, 
+            code, 
+            recipeType, 
+            ingredients, 
+            steps,
+        });
+
+        return recipe;
+    }
+
+    async delete(target: Recipe): Promise<void> {
+        const docRef = doc(this.db, this.collectionName, target.getCode().toString());
+        await deleteDoc(docRef);
     }
 }

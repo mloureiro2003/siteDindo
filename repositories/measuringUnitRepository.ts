@@ -1,20 +1,39 @@
-import { File } from "../services/file.js";
+import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { Code } from "../models/code.js";
 import { MeasuringUnit } from "../models/measuringUnit.js";
 
 export class MeasuringUnitRepository {
-    private static FILE_PATH = "measuringUnit.json";
+    private db: Firestore;
+    private collectionName = "measuringUnit";
 
-    getAll(): MeasuringUnit[] {
-        const rawData: { value: string, code: Code }[] = File.getFileContent(MeasuringUnitRepository.FILE_PATH);
-        return rawData.map(item => new MeasuringUnit(item.value, item.code));
+    constructor(db: Firestore) {
+        this.db = db;
     }
 
-    create(value: string, code: Code): MeasuringUnit {
-        return new MeasuringUnit(value, code);
+    async getAll(): Promise<MeasuringUnit[]> {
+        const colRef = collection(this.db, this.collectionName);
+        const snapshot = await getDocs(colRef);
+
+        return snapshot.docs.map(doc => {
+            const data = doc.data();
+            return new MeasuringUnit(data.value, data.code);
+        });
     }
 
-    delete(measuringUnits: MeasuringUnit[], target: MeasuringUnit): MeasuringUnit[] {
-        return measuringUnits.filter(measuringUnit => measuringUnit.getCode() !== target.getCode());
+    async create(value: string, code: Code): Promise<MeasuringUnit> {
+        const measuringUnit = new MeasuringUnit(value, code);
+        const docRef = doc(this.db, this.collectionName, code.toString());
+
+        await setDoc(docRef, {
+            value, 
+            code
+        });
+
+        return measuringUnit
+    }
+
+    async delete(target: MeasuringUnit): Promise<void> {
+        const docref = doc(this.db, this.collectionName, target.getCode().toString());
+        await deleteDoc(docref);
     }
 }
