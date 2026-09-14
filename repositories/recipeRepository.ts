@@ -1,43 +1,46 @@
-import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";import { Code } from "../models/code.js";
-import { RecipeType } from "../models/recipeType.js";
-import { IngredientRecipe } from "../models/ingredientRecipe.js";
-import { Recipe } from "../models/recipe.js";
+import { Firestore, collection, addDoc, getDocs } from "firebase/firestore";
 
+export interface RecipeIngredientData {
+    ingredientCode: string;
+    unitCode: string;
+    quantity: number;
+}
+
+export interface RecipeData {
+    name: string;
+    typeCode: string;
+    ingredients: RecipeIngredientData[];
+    steps: string;
+}
+
+// NOTE: this repository works with plain Firestore data rather than the full
+// Recipe / IngredientRecipe / Code class graph. Fully hydrating those on read
+// would require fetching each referenced Ingredient and MeasuringUnit doc
+// individually - a good next step once the "list recipes" view is built, but
+// not required to persist a new recipe.
 export class RecipeRepository {
     private db: Firestore;
-    private collectionName = "recipe";
+    private collectionName = "recipes";
 
     constructor(db: Firestore) {
         this.db = db;
     }
 
-    async getAll(): Promise<Recipe[]> {
+    async getAll(): Promise<(RecipeData & { id: string })[]> {
         const colRef = collection(this.db, this.collectionName);
         const snapshot = await getDocs(colRef);
 
-        return snapshot.docs.map(doc => {
-            const data = doc.data();
-            return new Recipe(data.name, data.code, data.recipeType, data.ingredients, data.steps);
-        })
+        return snapshot.docs.map(docSnap => ({
+            id: docSnap.id,
+            ...(docSnap.data() as RecipeData)
+        }));
     }
 
-    async create(name: string, code: Code, recipeType: RecipeType, ingredients: IngredientRecipe[], steps: string[]): Promise<Recipe> {
-        const recipe = new Recipe(name, code, recipeType, ingredients, steps);
-        const docRef = doc(this.db, this.collectionName, code.toString());
-
-        await setDoc(docRef, {
-            name, 
-            code, 
-            recipeType, 
-            ingredients, 
-            steps,
+    async create(data: RecipeData): Promise<string> {
+        const docRef = await addDoc(collection(this.db, this.collectionName), {
+            ...data,
+            createdAt: new Date()
         });
-
-        return recipe;
-    }
-
-    async delete(target: Recipe): Promise<void> {
-        const docRef = doc(this.db, this.collectionName, target.getCode().toString());
-        await deleteDoc(docRef);
+        return docRef.id;
     }
 }

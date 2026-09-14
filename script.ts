@@ -1,7 +1,7 @@
 import { MeasuringUnitRepository } from "./repositories/measuringUnitRepository.js";
 import Quill from "quill";
 import { db } from "./services/firebase.js";
-import { initUnitForm } from "./controllers/measuringUnitController.js";
+import { MeasuringUnitController } from "./controllers/measuringUnitController.js";
 
 // Navigation Handlers
 function showSection(sectionId: string): void {
@@ -83,26 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Initialize all form handlers
-  initUnitForm();
+  // 2. Initialize all form handlers - each one now actually persists to Firestore
+  const unitController = new MeasuringUnitController(new MeasuringUnitRepository(db));
+  void unitController.init();
+  //initIngredientForm();
+  //initRecipeTypeForm();
+  //initRecipeForm(quillEditor);
 
   // 3. Form Input Validation UI Feedback
   const textInputs = document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[type="text"], textarea');
   textInputs.forEach((input) => {
     input.addEventListener('input', () => {
-      if (input.hasAttribute('required') && input.value.trim() === ''){
+      if (input.hasAttribute('required') && input.value.trim() === '') {
         input.style.borderColor = '#bc4749';
       } else {
         input.style.borderColor = '#cccccc';
       }
-    })
-  })
-
-  // 4. Repositories Initialization
-  const uniRepo = new MeasuringUnitRepository(db);
-  unitRepo.getAll()
-    .then((units) => console.log("Measuring Units loaded," units))
-    .catch((error) => console.log("Failed to load measuring units", error));
-
-
+    });
+  });
 });

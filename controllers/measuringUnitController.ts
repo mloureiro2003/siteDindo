@@ -1,43 +1,137 @@
-import { db } from "../services/firebase";
-import { MeasuringUnitRepository } from "../repositories/measuringUnitRepository";
-import { Code } from "../models/code";
+import { MeasuringUnitRepository } from "../repositories/measuringUnitRepository.js";
+import { MeasuringUnit } from "../models/measuringUnit.js";
+import { Code } from "../models/code.js";
+import { TableRenderer } from "../components/tableRenderer.js";
 
-const unitRepository = new MeasuringUnitRepository(db);
+export class MeasuringUnitController {
+  private repository: MeasuringUnitRepository;
+  private tableRenderer: TableRenderer<MeasuringUnit> | null = null;
+  private editingUnit: MeasuringUnit | null = null;
+  private form: HTMLFormElement | null = null;
+  private codeInput: HTMLInputElement | null = null;
+  private descriptionInput: HTMLInputElement | null = null;
+  private submitButton: HTMLButtonElement | null = null;
 
-export function initUnitForm(): void {
-  const formUnit = document.getElementById("form-unit") as HTMLFormElement | null;
-  if (!formUnit || formUnit.dataset.initialized === "true") return;
-  
-  formUnit.dataset.initialized = "true";
+  constructor(repository: MeasuringUnitRepository) {
+    this.repository = repository;
+  }
 
-  formUnit.addEventListener("submit", async (event: SubmitEvent) => {
-    event.preventDefault();
-    event.stopPropagation(); // Stop parent bubbling
+  async init(): Promise<void> {
+    this.form = document.getElementById("form-unit") as HTMLFormElement | null;
+    this.codeInput = document.getElementById("unit-code") as HTMLInputElement | null;
+    this.descriptionInput = document.getElementById("unit-description") as HTMLInputElement | null;
 
-    const codeInput = document.getElementById("unit-code") as HTMLInputElement | null;
-    const descriptionInput = document.getElementById("unit-description") as HTMLInputElement | null;
+    const tableBody = document.getElementById("table-units") as HTMLTableSectionElement | null;
+    if (tableBody) {
+      this.tableRenderer = new TableRenderer<MeasuringUnit>(
+        tableBody,
+        [
+          { getValue: (unit) => unit.getCode().getValue() },
+          { getValue: (unit) => unit.getValue() },
+        ],
+        {
+          onEdit: (unit) => this.startEdit(unit),
+          onDelete: (unit) => void this.remove(unit),
+        }
+      );
+    }
 
-    if (!codeInput || !descriptionInput) {
+    if (!this.form || this.form.dataset.initialized === "true") return;
+    this.form.dataset.initialized = "true";
+    this.submitButton = this.form.querySelector('button[type="submit"]');
+
+    this.form.addEventListener("submit", (event: SubmitEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      void this.save();
+    });
+
+    await this.refreshTable();
+  }
+
+  private async save(): Promise<void> {
+    if (!this.codeInput || !this.descriptionInput) {
       alert("Erro: Campos de input não encontrados no DOM.");
       return;
     }
 
-    const codeValue = codeInput.value.trim().toLowerCase();
-    const description = descriptionInput.value.trim();
+    const codeValue = this.codeInput.value.trim().toLowerCase();
+    const description = this.descriptionInput.value.trim();
 
     if (!codeValue || !description) {
       alert("Por favor, preencha todos os campos.");
       return;
     }
 
+    const newCode = new Code(codeValue);
+
     try {
-        const unit = await unitRepository.create(description, new Code(codeValue));
-        alert(`Cadastrado com sucesso! Código: ${unit.getCode().getValue()}`);
-        formUnit.reset();
+      if (this.editingUnit && this.editingUnit.getCode().getValue() !== codeValue) {
+        await this.repository.delete(this.editingUnit);
+      }
+
+      await this.repository.create(description, newCode);
+      alert(`Unidade "${description}" salva com sucesso!`);
+      this.cancelEdit();
+      await this.refreshTable();
     } catch (error: any) {
-        console.error("FIRESTORE ERROR (unit)", error);
-        alert(`Error ao salvar no Firebase: ${error.message || error}`);
+      console.error("FIRESTORE ERROR (unit):", error);
+      alert(`Erro ao salvar unidade: ${error.message || error}`);
+    }
+  }
+
+  private async refreshTable(): Promise<void> {
+    if (!this.tableRenderer) return;
+
+    let units: MeasuringUnit[] = [];
+    try {
+      units = await this.repository.getAll();
+    } catch (error: any) {
+      console.error("FIRESTORE ERROR (units getAll):", error);
+      return;
     }
 
-  });
+    this.tableRenderer.render(units);
+  }
+
+  private startEdit(unit: MeasuringUnit): void {
+    if (!this.codeInput || !this.descriptionInput) return;
+
+    this.editingUnit = unit;
+    this.codeInput.value = unit.getCode().getValue();
+    this.descriptionInput.value = unit.getValue();
+
+    if (this.submitButton) {
+      this.submitButton.textContent = "Atualizar Unidade";
+    }
+
+    
+
+    this.codeInput.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  private cancelEdit(): void {
+    this.editingUnit = null;
+    this.form?.reset();
+
+    if (this.submitButton) {
+      this.submitButton.textContent = "Salvar Unidade";
+    }
+  }
+
+  private async remove(unit: MeasuringUnit): Promise<void> {
+    const confirmed = confirm(`Excluir a unidade "${unit.getValue()}" (${unit.getCode().getValue()})?`);
+    if (!confirmed) return;
+
+    try {
+      await this.repository.delete(unit);
+      if (this.editingUnit && this.editingUnit.getCode().getValue() === unit.getCode().getValue()) {
+        this.cancelEdit();
+      }
+      await this.refreshTable();
+    } catch (error: any) {
+      console.error("FIRESTORE ERROR (unit delete):", error);
+      alert(`Erro ao excluir unidade: ${error.message || error}`);
+    }
+  }
 }

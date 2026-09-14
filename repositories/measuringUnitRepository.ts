@@ -14,26 +14,27 @@ export class MeasuringUnitRepository {
         const colRef = collection(this.db, this.collectionName);
         const snapshot = await getDocs(colRef);
 
-        return snapshot.docs.map(doc => {
-            const data = doc.data();
-            return new MeasuringUnit(data.value, data.code);
+        return snapshot.docs.map(docSnap => {
+            const data = docSnap.data();
+            return new MeasuringUnit(data.value, new Code(data.code));
         });
     }
 
     async create(value: string, code: Code): Promise<MeasuringUnit> {
         const measuringUnit = new MeasuringUnit(value, code);
-        const docRef = doc(this.db, this.collectionName, code.toString());
+        const docRef = doc(this.db, this.collectionName, code.getValue());
 
         await setDoc(docRef, {
-            value, 
-            code
+            value,
+            code: code.getValue(),
+            createdAt: new Date()
         });
 
-        return measuringUnit
+        return measuringUnit;
     }
 
     async delete(target: MeasuringUnit): Promise<void> {
-        const docref = doc(this.db, this.collectionName, target.getCode().toString());
-        await deleteDoc(docref);
+        const docRef = doc(this.db, this.collectionName, target.getCode().getValue());
+        await deleteDoc(docRef);
     }
 }

@@ -3,6 +3,7 @@ node_modules/
 
 # Compilation directory
 dist/
+node_modules/
 
 # Environment variables & secrets
 .env
