@@ -14,7 +14,7 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
 
   override async init(): Promise<void> {
     this.codeInput = document.getElementById("unit-code") as HTMLInputElement | null;
-    this.descriptionInput = document.getElementById("unit-description") as HTMLInputElement | null;
+    this.descriptionInput = document.getElementById("unit-value") as HTMLInputElement | null;
     
     // Executa a inicialização padrão (eventos do form + renderização da tabela)
     await super.init();
