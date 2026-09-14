@@ -5,7 +5,7 @@ import { Code } from "../models/code.js";
 
 export class MeasuringUnitController extends BaseController<MeasuringUnit> {
   private codeInput: HTMLInputElement | null = null;
-  private descriptionInput: HTMLInputElement | null = null;
+  private valueInput: HTMLInputElement | null = null;
 
   constructor(private repository: MeasuringUnitRepository) {
     // Passa os IDs dos elementos HTML diretamente para a classe base
@@ -14,7 +14,7 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
 
   override async init(): Promise<void> {
     this.codeInput = document.getElementById("unit-code") as HTMLInputElement | null;
-    this.descriptionInput = document.getElementById("unit-value") as HTMLInputElement | null;
+    this.valueInput = document.getElementById("unit-value") as HTMLInputElement | null;
     
     // Executa a inicialização padrão (eventos do form + renderização da tabela)
     await super.init();
@@ -32,10 +32,10 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
   }
 
   protected async save(): Promise<void> {
-    if (!this.codeInput || !this.descriptionInput) return;
+    if (!this.codeInput || !this.valueInput) return;
 
     const codeValue = this.codeInput.value.trim().toUpperCase();
-    const description = this.descriptionInput.value.trim();
+    const description = this.valueInput.value.trim();
     if (!codeValue || !description) return alert("Preencha todos os campos.");
 
     const newCode = new Code(codeValue);
@@ -58,11 +58,11 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
   }
 
   protected startEdit(unit: MeasuringUnit): void {
-    if (!this.codeInput || !this.descriptionInput) return;
+    if (!this.codeInput || !this.valueInput) return;
 
     this.editingItem = unit;
     this.codeInput.value = unit.getCode().getValue();
-    this.descriptionInput.value = unit.getValue();
+    this.valueInput.value = unit.getValue();
 
     if (this.submitButton) {
       this.submitButton.textContent = "Atualizar Unidade";
