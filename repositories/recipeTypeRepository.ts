@@ -1,40 +1,25 @@
-import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { Firestore } from "firebase/firestore";
 import { Code } from "../models/code.js";
 import { RecipeType } from "../models/recipeType"
-import { FoodGroup } from "../models/foodGroup.js";
+import { BaseRepository } from "./baseRepository.js";
 
-export class RecipeTypeRepository {
-    private db: Firestore;
-    private collectionName = "foodGroup";
-
+export class RecipeTypeRepository extends BaseRepository<RecipeType> {
     constructor(db: Firestore) {
-        this.db = db;
+        super (db, "recipeType")
     }
 
-    async getAll(): Promise<RecipeType[]> {
-        const colRef = collection(this.db, this.collectionName);
-        const snapshot = await getDocs(colRef);
-
-        return snapshot.docs.map(doc => {
-            const data = doc.data();
-            return new RecipeType(data.value, data.code);
-        });
-    }
-    
-    async create(value: string, code: Code): Promise<RecipeType>{
-        const recipeType = new RecipeType(value, code);
-        const docRef = doc(this.db, this.collectionName, code.toString());
-    
-        await setDoc(docRef, {
-            value, 
-            code
-        })
-
-        return recipeType;
+    protected getId(item: RecipeType): string {
+        return item.getCode().getValue();
     }
 
-    async delete(target: RecipeType): Promise<void> {
-        const docRef = doc(this.db, this.collectionName, target.getCode().toString());
-        await deleteDoc(docRef);
+    protected mapToDomain(id: string, data: any): RecipeType {
+        return new RecipeType(new Code(id), data.value);
+    }
+
+    protected mapToDatabase(item: RecipeType) {
+        return {
+            code: item.getCode().getValue(),
+            value: item.getValue()
+        };
     }
 }

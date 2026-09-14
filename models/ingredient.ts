@@ -3,9 +3,9 @@ import { FoodGroup } from "../models/foodGroup"
 
 export class Ingredient {
     constructor(
+        private code: Code,
         private name: string,
         private foodGroup: FoodGroup, 
-        private code: Code,
         private synonym?: string
     ){}
 

@@ -24,31 +24,6 @@ function showSubView(subViewId: string): void {
   }
 }
 
-// Dynamic Recipe Row Handlers
-function addIngredientRow(): void {
-  const container = document.getElementById('list-ingredients-recipe');
-  if (!container) return;
-
-  const newRow = document.createElement('div');
-  newRow.className = 'ingredient-row';
-  newRow.innerHTML = `
-    <input type="text" placeholder="Cód" style="width: 80px;" class="ing-cod">
-    <select class="ing-select" style="flex: 2;" required>
-      <option value="">Selecione o ingrediente...</option>
-    </select>
-    <input type="number" step="0.01" placeholder="Qtd" style="width: 100px;" class="ing-qtd" required>
-    <select class="ing-unit" style="flex: 1;" required>
-      <option value="">Unidade...</option>
-    </select>
-    <button type="button" onclick="removeIngredientRow(this)">X</button>
-  `;
-  container.appendChild(newRow);
-}
-
-function removeIngredientRow(btn: HTMLButtonElement): void {
-  btn.parentElement?.remove();
-}
-
 function generateReport(type: string): void {
   const area = document.getElementById('area-relatorio');
   if (area) {
@@ -59,8 +34,6 @@ function generateReport(type: string): void {
 // Expose navigation functions to window object for inline HTML handlers
 (window as any).showSection = showSection;
 (window as any).showSubView = showSubView;
-(window as any).addIngredientRow = addIngredientRow;
-(window as any).removeIngredientRow = removeIngredientRow;
 (window as any).generateReport = generateReport;
 
 document.addEventListener('DOMContentLoaded', () => {

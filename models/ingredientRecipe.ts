@@ -1,39 +1,31 @@
-import { MeasuringUnit } from "../models/measuringUnit"
-import { Ingredient } from "../models/ingredient"
+import { Code } from "./code.js";
+import { Ingredient } from "./ingredient.js";
+import { MeasuringUnit } from "./measuringUnit.js";
 
 export class IngredientRecipe {
-    constructor(
-        private ingredient: Ingredient,
-        private measuringUnit: MeasuringUnit, 
-        private unit: number
-    ) {}
+  private ingredient: Ingredient;
+  private quantity: number;
+  private unit: MeasuringUnit;
 
-    getIngredient(): Ingredient {
-        return this.ingredient;
-    }
+  constructor(ingredient: Ingredient, quantity: number, unit: MeasuringUnit) {
+    this.ingredient = ingredient;
+    this.quantity = quantity;
+    this.unit = unit;
+  }
+  
+  public getCode(): Code {
+    return this.ingredient.getCode();
+  }
 
-    getName(): string {
-        return this.getIngredient().getName();
-    }
+  public getIngredient(): Ingredient {
+    return this.ingredient;
+  }
 
+  public getQuantity(): number {
+    return this.quantity;
+  }
 
-    getMeasuringUnit(): MeasuringUnit{
-        return this.measuringUnit;
-    }
-
-    getUnit(): number {
-        return this.unit;
-    }
-
-    setIngredient(newIngredient: Ingredient): void {
-        this.ingredient = newIngredient;
-    }
-
-    setMeasuringUnit(newMeasuringUnit: MeasuringUnit): void {
-        this.measuringUnit = newMeasuringUnit;
-    }
-
-    setUnit(newUnit: number): void {
-        this.unit = newUnit;
-    }
+  public getUnit(): MeasuringUnit {
+    return this.unit;
+  }
 }

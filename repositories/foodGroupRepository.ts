@@ -1,39 +1,25 @@
-import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { Firestore } from "firebase/firestore";
 import { Code } from "../models/code.js";
 import { FoodGroup } from "../models/foodGroup.js";
+import { BaseRepository } from "./baseRepository.js";
 
-export class FoodGroupRepository {
-    private db: Firestore;
-    private collectionName = "foodGroup";
-    
+export class FoodGroupRepository  extends BaseRepository<FoodGroup> {
     constructor(db: Firestore) {
-        this.db = db;
+        super(db, "foodGroup");
     }
 
-    async getAll(): Promise<FoodGroup[]> {
-        const colRef = collection(this.db, this.collectionName);
-        const snapshot = await getDocs(colRef);
-
-        return snapshot.docs.map(doc => {
-            const data = doc.data();
-            return new FoodGroup(data.value, data.code);
-        });
+    protected getId(item: FoodGroup): string {
+        return item.getCode().getValue();
     }
 
-    async create(value: string, code: Code): Promise<FoodGroup> {
-        const foodGroup = new FoodGroup(value, code);
-        const docRef = doc(this.db, this.collectionName, code.toString());
-        
-        await setDoc(docRef, {
-            value,
-            code
-        });
-        
-        return foodGroup;
+    protected mapToDomain(id: string, data: any): FoodGroup {
+        return new FoodGroup(new Code(id), data.description);
     }
 
-    async delete(target: FoodGroup): Promise<void> {
-        const docRef = doc(this.db, this.collectionName, target.getCode().toString());
-        await deleteDoc(docRef);
+    protected mapToDatabase(item: FoodGroup): any {
+        return {
+            code: item.getCode().getValue(),
+            description: item.getValue()   
+        }
     }
 }

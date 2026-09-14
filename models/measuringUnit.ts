@@ -2,8 +2,8 @@ import { Code } from "../models/code.js";
 
 export class MeasuringUnit {
     constructor(
-        private value: string,
-        private code: Code
+        private code: Code,
+        private value: string
     ) {}
 
     getValue(): string {

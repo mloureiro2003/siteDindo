@@ -1,46 +1,28 @@
-import { Firestore, collection, addDoc, getDocs } from "firebase/firestore";
+import { Firestore } from "firebase/firestore";
+import { Code } from "../models/code";
+import { Recipe } from "../models/recipe";
+import { BaseRepository } from "./baseRepository";
 
-export interface RecipeIngredientData {
-    ingredientCode: string;
-    unitCode: string;
-    quantity: number;
-}
-
-export interface RecipeData {
-    name: string;
-    typeCode: string;
-    ingredients: RecipeIngredientData[];
-    steps: string;
-}
-
-// NOTE: this repository works with plain Firestore data rather than the full
-// Recipe / IngredientRecipe / Code class graph. Fully hydrating those on read
-// would require fetching each referenced Ingredient and MeasuringUnit doc
-// individually - a good next step once the "list recipes" view is built, but
-// not required to persist a new recipe.
-export class RecipeRepository {
-    private db: Firestore;
-    private collectionName = "recipes";
-
+export class RecipeRepository extends BaseRepository<Recipe> {
     constructor(db: Firestore) {
-        this.db = db;
+        super (db, "recipe")
     }
 
-    async getAll(): Promise<(RecipeData & { id: string })[]> {
-        const colRef = collection(this.db, this.collectionName);
-        const snapshot = await getDocs(colRef);
-
-        return snapshot.docs.map(docSnap => ({
-            id: docSnap.id,
-            ...(docSnap.data() as RecipeData)
-        }));
+    protected getId(item: Recipe): string {
+        return item.getCode().getValue();
     }
 
-    async create(data: RecipeData): Promise<string> {
-        const docRef = await addDoc(collection(this.db, this.collectionName), {
-            ...data,
-            createdAt: new Date()
-        });
-        return docRef.id;
+    protected mapToDomain(id: string, data: any): Recipe {
+        return new Recipe(new Code(id), data.name, data.recipeType, data.ingredient, data.steps);
+    }
+
+    protected mapToDatabase(item: Recipe) {
+        return {
+            code: item.getCode().getValue(),
+            name: item.getName(),
+            recipeType: item.getRecipeType(),
+            ingredient: item.getIngredients(),
+            steps: item.getSteps()
+        };
     }
 }

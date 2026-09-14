@@ -2,8 +2,8 @@ import { Code } from "../models/code.js";
 
 export class RecipeType {
     constructor(
+        private code: Code,
         private value: string,
-        private code: Code
     ) {}
 
     getValue(): string {

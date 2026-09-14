@@ -4,8 +4,8 @@ import { Code } from "../models/code.js";
 
 export class Recipe {
     constructor(
-        private name: string,
         private code: Code,
+        private name: string,
         private recipeType: RecipeType,
         private ingredients: IngredientRecipe[],
         private steps: string[]

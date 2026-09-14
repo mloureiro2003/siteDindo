@@ -1,52 +1,27 @@
-import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { Firestore } from "firebase/firestore";
 import { Code } from "../models/code.js";
-import { FoodGroup } from "../models/foodGroup.js";
 import { Ingredient } from "../models/ingredient.js";
+import { BaseRepository } from "./baseRepository.js";
 
-export class IngredientRepository {
-    private db: Firestore;
-    private collectionName = "ingredients";
-
+export class IngredientRepository extends BaseRepository<Ingredient> {
     constructor(db: Firestore) {
-        this.db = db;
+        super(db, "ingredient")
     }
 
-    async getAll(): Promise<Ingredient[]> {
-        const colRef = collection(this.db, this.collectionName);
-        const snapshot = await getDocs(colRef);
-
-        return snapshot.docs.map(docSnap => {
-            const data = docSnap.data();
-            const foodGroup = new FoodGroup(data.groupValue ?? "", new Code(data.groupCode));
-            return new Ingredient(data.name, foodGroup, new Code(data.code), data.synonym);
-        });
+    protected getId(item: Ingredient): string {
+        return item.getCode().getValue();
+    } 
+    
+    protected mapToDomain(id: string, data: any): Ingredient {
+        return new Ingredient(new Code(id), data.name, data.foodGroup, data.synonym)
     }
 
-    async create(
-        name: string,
-        code: Code,
-        foodGroup: FoodGroup,
-        synonym?: string,
-        specifications?: string
-    ): Promise<Ingredient> {
-        const ingredient = new Ingredient(name, foodGroup, code, synonym);
-        const docRef = doc(this.db, this.collectionName, code.getValue());
-
-        await setDoc(docRef, {
-            name,
-            code: code.getValue(),
-            groupCode: foodGroup.getCode().getValue(),
-            groupValue: foodGroup.getValue(),
-            synonym: synonym ?? "",
-            specifications: specifications ?? "",
-            createdAt: new Date()
-        });
-
-        return ingredient;
-    }
-
-    async delete(target: Ingredient): Promise<void> {
-        const docRef = doc(this.db, this.collectionName, target.getCode().getValue());
-        await deleteDoc(docRef);
+    protected mapToDatabase(item: Ingredient): any {
+        return {
+            code: item.getCode().getValue(),
+            name: item.getName(),
+            FoodGroup: item.getFoodGroup(),
+            synonym: item.getSynonym()
+        }
     }
 }

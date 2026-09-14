@@ -1,104 +1,66 @@
+import { BaseController } from "./baseController.js";
 import { MeasuringUnitRepository } from "../repositories/measuringUnitRepository.js";
 import { MeasuringUnit } from "../models/measuringUnit.js";
 import { Code } from "../models/code.js";
-import { TableRenderer } from "../components/tableRenderer.js";
 
-export class MeasuringUnitController {
-  private repository: MeasuringUnitRepository;
-  private tableRenderer: TableRenderer<MeasuringUnit> | null = null;
-  private editingUnit: MeasuringUnit | null = null;
-  private form: HTMLFormElement | null = null;
+export class MeasuringUnitController extends BaseController<MeasuringUnit> {
   private codeInput: HTMLInputElement | null = null;
   private descriptionInput: HTMLInputElement | null = null;
-  private submitButton: HTMLButtonElement | null = null;
 
-  constructor(repository: MeasuringUnitRepository) {
-    this.repository = repository;
+  constructor(private repository: MeasuringUnitRepository) {
+    // Passa os IDs dos elementos HTML diretamente para a classe base
+    super("unit-register", "unit-search", "form-unit", "table-units");
   }
 
-  async init(): Promise<void> {
-    this.form = document.getElementById("form-unit") as HTMLFormElement | null;
+  override async init(): Promise<void> {
     this.codeInput = document.getElementById("unit-code") as HTMLInputElement | null;
     this.descriptionInput = document.getElementById("unit-description") as HTMLInputElement | null;
-
-    const tableBody = document.getElementById("table-units") as HTMLTableSectionElement | null;
-    if (tableBody) {
-      this.tableRenderer = new TableRenderer<MeasuringUnit>(
-        tableBody,
-        [
-          { getValue: (unit) => unit.getCode().getValue() },
-          { getValue: (unit) => unit.getValue() },
-        ],
-        {
-          onEdit: (unit) => this.startEdit(unit),
-          onDelete: (unit) => void this.remove(unit),
-        }
-      );
-    }
-
-    if (!this.form || this.form.dataset.initialized === "true") return;
-    this.form.dataset.initialized = "true";
-    this.submitButton = this.form.querySelector('button[type="submit"]');
-
-    this.form.addEventListener("submit", (event: SubmitEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      void this.save();
-    });
-
-    await this.refreshTable();
+    
+    // Executa a inicialização padrão (eventos do form + renderização da tabela)
+    await super.init();
   }
 
-  private async save(): Promise<void> {
-    if (!this.codeInput || !this.descriptionInput) {
-      alert("Erro: Campos de input não encontrados no DOM.");
-      return;
-    }
+  protected getTableColumns() {
+    return [
+      { getValue: (unit: MeasuringUnit) => unit.getCode().getValue() },
+      { getValue: (unit: MeasuringUnit) => unit.getValue() },
+    ];
+  }
+
+  protected async getAllItems(): Promise<MeasuringUnit[]> {
+    return await this.repository.getAll();
+  }
+
+  protected async save(): Promise<void> {
+    if (!this.codeInput || !this.descriptionInput) return;
 
     const codeValue = this.codeInput.value.trim().toUpperCase();
     const description = this.descriptionInput.value.trim();
-
-    if (!codeValue || !description) {
-      alert("Por favor, preencha todos os campos.");
-      return;
-    }
+    if (!codeValue || !description) return alert("Preencha todos os campos.");
 
     const newCode = new Code(codeValue);
+    const newUnit = new MeasuringUnit(newCode, description)
 
     try {
-      if (this.editingUnit && this.editingUnit.getCode().getValue() !== codeValue) {
-        await this.repository.delete(this.editingUnit);
+      if (this.editingItem && this.editingItem.getCode().getValue() !== codeValue) {
+        await this.repository.delete(this.editingItem);
       }
 
-      await this.repository.create(description, newCode);
+      await this.repository.save(newUnit);
       alert(`Unidade "${description}" salva com sucesso!`);
+      
       this.cancelEdit();
+      this.showViews();
       await this.refreshTable();
-      this.navigateToList();
     } catch (error: any) {
-      console.error("FIRESTORE ERROR (unit):", error);
-      alert(`Erro ao salvar unidade: ${error.message || error}`);
+      alert(`Erro ao salvar: ${error.message || error}`);
     }
   }
 
-  private async refreshTable(): Promise<void> {
-    if (!this.tableRenderer) return;
-
-    let units: MeasuringUnit[] = [];
-    try {
-      units = await this.repository.getAll();
-    } catch (error: any) {
-      console.error("FIRESTORE ERROR (units getAll):", error);
-      return;
-    }
-
-    this.tableRenderer.render(units);
-  }
-
-  private startEdit(unit: MeasuringUnit): void {
+  protected startEdit(unit: MeasuringUnit): void {
     if (!this.codeInput || !this.descriptionInput) return;
 
-    this.editingUnit = unit;
+    this.editingItem = unit;
     this.codeInput.value = unit.getCode().getValue();
     this.descriptionInput.value = unit.getValue();
 
@@ -106,53 +68,19 @@ export class MeasuringUnitController {
       this.submitButton.textContent = "Atualizar Unidade";
     }
 
-    this.navigateToForm();
+    this.showViews();
     this.codeInput.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  private cancelEdit(): void {
-    this.editingUnit = null;
-    this.form?.reset();
-
-    if (this.submitButton) {
-      this.submitButton.textContent = "Salvar Unidade";
-    }
-  }
-
-  private async remove(unit: MeasuringUnit): Promise<void> {
-    const confirmed = confirm(`Excluir a unidade "${unit.getValue()}" (${unit.getCode().getValue()})?`);
-    if (!confirmed) return;
+  protected async remove(unit: MeasuringUnit): Promise<void> {
+    if (!confirm(`Excluir a unidade "${unit.getValue()}"?`)) return;
 
     try {
       await this.repository.delete(unit);
       this.cancelEdit();
       await this.refreshTable();
-
     } catch (error: any) {
-      console.error("FIRESTORE ERROR (unit delete):", error);
-      alert(`Erro ao excluir unidade: ${error.message || error}`);
-    }
-  }
-
-  private navigateToForm(): void {
-    if (typeof (window as any).showSubView === "function") {
-      (window as any).showSubView("unit-register");
-    } else {
-      const register = document.getElementById("unit-register");
-      const search = document.getElementById("unit-search");
-      if (register) register.style.display = "block";
-      if (search) search.style.display = "none";
-    }
-  }
-
-  private navigateToList(): void {
-    if (typeof (window as any).showSubView === "function") {
-      (window as any).showSubView("unit-search");
-    } else {
-      const register = document.getElementById("unit-register");
-      const search = document.getElementById("unit-search");
-      if (register) register.style.display = "none";
-      if (search) search.style.display = "block";
+      alert(`Erro ao excluir: ${error.message || error}`);
     }
   }
 }

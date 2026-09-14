@@ -1,40 +1,25 @@
-import { Firestore, collection, getDocs, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { Firestore } from "firebase/firestore";
 import { Code } from "../models/code.js";
 import { MeasuringUnit } from "../models/measuringUnit.js";
+import { BaseRepository } from "./baseRepository.js";
 
-export class MeasuringUnitRepository {
-    private db: Firestore;
-    private collectionName = "measuringUnit";
-
+export class MeasuringUnitRepository extends BaseRepository<MeasuringUnit> {
     constructor(db: Firestore) {
-        this.db = db;
+        super(db, "measuringUnit");
     }
 
-    async getAll(): Promise<MeasuringUnit[]> {
-        const colRef = collection(this.db, this.collectionName);
-        const snapshot = await getDocs(colRef);
-
-        return snapshot.docs.map(docSnap => {
-            const data = docSnap.data();
-            return new MeasuringUnit(data.value, new Code(data.code));
-        });
+    protected getId(item: MeasuringUnit): string {
+        return item.getCode().getValue();
     }
 
-    async create(value: string, code: Code): Promise<MeasuringUnit> {
-        const measuringUnit = new MeasuringUnit(value, code);
-        const docRef = doc(this.db, this.collectionName, code.getValue());
-
-        await setDoc(docRef, {
-            value,
-            code: code.getValue(),
-            createdAt: new Date()
-        });
-
-        return measuringUnit;
+    protected mapToDomain(id: string, data: any): MeasuringUnit {
+        return new MeasuringUnit(new Code(id), data.value);
     }
 
-    async delete(target: MeasuringUnit): Promise<void> {
-        const docRef = doc(this.db, this.collectionName, target.getCode().getValue());
-        await deleteDoc(docRef);
+    protected mapToDatabase(item: MeasuringUnit): any {
+        return {
+            code: item.getCode().getValue(),
+            value: item.getValue()
+        };
     }
 }
