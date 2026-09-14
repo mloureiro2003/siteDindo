@@ -55,7 +55,7 @@ export class MeasuringUnitController {
       return;
     }
 
-    const codeValue = this.codeInput.value.trim().toLowerCase();
+    const codeValue = this.codeInput.value.trim().toUpperCase();
     const description = this.descriptionInput.value.trim();
 
     if (!codeValue || !description) {
@@ -74,6 +74,7 @@ export class MeasuringUnitController {
       alert(`Unidade "${description}" salva com sucesso!`);
       this.cancelEdit();
       await this.refreshTable();
+      this.navigateToList();
     } catch (error: any) {
       console.error("FIRESTORE ERROR (unit):", error);
       alert(`Erro ao salvar unidade: ${error.message || error}`);
@@ -105,8 +106,7 @@ export class MeasuringUnitController {
       this.submitButton.textContent = "Atualizar Unidade";
     }
 
-    
-
+    this.navigateToForm();
     this.codeInput.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
@@ -125,13 +125,34 @@ export class MeasuringUnitController {
 
     try {
       await this.repository.delete(unit);
-      if (this.editingUnit && this.editingUnit.getCode().getValue() === unit.getCode().getValue()) {
-        this.cancelEdit();
-      }
+      this.cancelEdit();
       await this.refreshTable();
+
     } catch (error: any) {
       console.error("FIRESTORE ERROR (unit delete):", error);
       alert(`Erro ao excluir unidade: ${error.message || error}`);
+    }
+  }
+
+  private navigateToForm(): void {
+    if (typeof (window as any).showSubView === "function") {
+      (window as any).showSubView("unit-register");
+    } else {
+      const register = document.getElementById("unit-register");
+      const search = document.getElementById("unit-search");
+      if (register) register.style.display = "block";
+      if (search) search.style.display = "none";
+    }
+  }
+
+  private navigateToList(): void {
+    if (typeof (window as any).showSubView === "function") {
+      (window as any).showSubView("unit-search");
+    } else {
+      const register = document.getElementById("unit-register");
+      const search = document.getElementById("unit-search");
+      if (register) register.style.display = "none";
+      if (search) search.style.display = "block";
     }
   }
 }

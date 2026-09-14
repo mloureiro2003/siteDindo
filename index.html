@@ -72,6 +72,14 @@
       .section-view { display: none; margin-top: 15px; }
       .active { display: block; }
 
+      /* Divisor de seção na mesma tela */
+      hr.section-divider {
+        border: 0;
+        height: 1px;
+        background: #e0e5e2;
+        margin: 30px 0;
+      }
+
       /* Navegação das Sub-abas */
       .sub-nav { 
         margin-bottom: 15px; 
@@ -146,7 +154,7 @@
         color: white;
         border: none;
         padding: 6px 10px;
-        border-radius: 4px;
+        border-radius: 3px;
         cursor: pointer;
       }
 
@@ -177,10 +185,6 @@
         <!-- 1. SEÇÃO DE RECEITAS -->
         <section id="sec-recipes" class="section-view active">
           <h2>Gestão de Receitas</h2>
-          <div class="sub-nav">
-            <button onclick="showSubView('rec-register')">1. Cadastrar</button>
-            <button onclick="showSubView('rec-search')">2. Pesquisar / Listar</button>
-          </div>
 
           <!-- Cadastrar Receita -->
           <div id="rec-register" class="sub-view">
@@ -225,8 +229,10 @@
             </form>
           </div>
 
+          <hr class="section-divider">
+
           <!-- Pesquisar/Excluir Receita -->
-          <div id="rec-search" class="sub-view" style="display:none;">
+          <div id="rec-search" class="sub-view">
             <h3>Pesquisar Receitas</h3>
             <input type="text" id="search-recipe" placeholder="Buscar por nome ou tipo..." oninput="filtrarReceitas()">
             <table>
@@ -248,10 +254,6 @@
         <!-- 2. SEÇÃO DE INGREDIENTES -->
         <section id="sec-ingredients" class="section-view">
           <h2>Gestão de Ingredientes</h2>
-          <div class="sub-nav">
-            <button onclick="showSubView('ing-register')">Cadastrar</button>
-            <button onclick="showSubView('ing-search')">Pesquisar / Alterar / Excluir</button>
-          </div>
 
           <div id="ing-register" class="sub-view">
             <h3>Cadastrar Ingrediente</h3>
@@ -280,7 +282,9 @@
             </form>
           </div>
 
-          <div id="ing-search" class="sub-view" style="display:none;">
+          <hr class="section-divider">
+
+          <div id="ing-search" class="sub-view">
             <h3>Lista de Ingredientes</h3>
             <table>
               <thead>
@@ -295,15 +299,12 @@
               <tbody id="table-ingrediets"></tbody>
             </table>
           </div>
+
         </section>
 
         <!-- 3. SEÇÃO DE TIPOS DE RECEITAS -->
         <section id="sec-types" class="section-view">
           <h2>Tipos de Receitas</h2>
-          <div class="sub-nav">
-            <button onclick="showSubView('type-register')">Cadastrar</button>
-            <button onclick="showSubView('type-search')">Pesquisar / Alterar / Excluir</button>
-          </div>
 
           <div id="type-register" class="sub-view">
             <h3>Cadastrar Tipo de Receita</h3>
@@ -320,7 +321,9 @@
             </form>
           </div>
 
-          <div id="type-search" class="sub-view" style="display:none;">
+          <hr class="section-divider">
+
+          <div id="type-search" class="sub-view">
             <h3>Lista de Tipos de Receita</h3>
             <table>
               <thead>
@@ -333,15 +336,12 @@
               <tbody id="table-types"></tbody>
             </table>
           </div>
+
         </section>
 
         <!-- 4. SEÇÃO DE UNIDADES DE MEDIDA -->
         <section id="sec-units" class="section-view">
           <h2>Unidades de Medida</h2>
-          <div class="sub-nav">
-            <button onclick="showSubView('unit-register')">Cadastrar</button>
-            <button onclick="showSubView('unit-search')">Pesquisar / Alterar / Excluir</button>
-          </div>
 
           <div id="unit-register" class="sub-view">
             <h3>Cadastrar Unidade de Medida</h3>
@@ -358,7 +358,9 @@
             </form>
           </div>
 
-          <div id="unit-search" class="sub-view" style="display:none;">
+          <hr class="section-divider">
+
+          <div id="unit-search" class="sub-view">
             <h3>Lista de Unidades de Medida</h3>
             <table>
               <thead>
@@ -371,6 +373,7 @@
               <tbody id="table-units"></tbody>
             </table>
           </div>
+
         </section>
 
         <!-- 5. SEÇÃO DE RELATÓRIOS / IMPRIMIR -->
