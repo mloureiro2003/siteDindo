@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
   void foodGroupController.init();
   void recipeTypeController.init();
   //initIngredientForm();
-  //initRecipeTypeForm();
   //initRecipeForm(quillEditor);
 
   // 3. Form Input Validation UI Feedback

@@ -5,6 +5,7 @@ export abstract class BaseController<T> {
     protected submitButton: HTMLButtonElement | null = null;
     protected tableRenderer: TableRenderer<T> | null = null;
     protected editingItem: T | null = null;
+    protected items: T[] = [];
 
     constructor(
         protected registerId: string, 
@@ -42,10 +43,13 @@ export abstract class BaseController<T> {
             }
         );
 
-        const items = await this.getAllItems();
-        this.tableRenderer.render(items);
+        this.items = await this.getAllItems();
+        this.tableRenderer.render(this.items);
+        this.onItemsLoaded(this.items)
     }
 
+    protected onItemsLoaded(item: T[]): void {}
+    
     protected showViews(): void {
         const register = document.getElementById(this.registerId);
         const search = document.getElementById(this.searchId);

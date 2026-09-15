@@ -4,6 +4,7 @@ import { FoodGroup } from "../models/foodGroup.js";
 import { Code } from "../models/code.js";
 
 export class FoodGroupController extends BaseController<FoodGroup> {
+    private static readonly INGREDIENT_GROUP_SELECT_ID = "ing-group";    
     private codeInput: HTMLInputElement | null = null;
     private valueInput: HTMLInputElement | null = null;
 
@@ -27,6 +28,30 @@ export class FoodGroupController extends BaseController<FoodGroup> {
 
     protected async getAllItems(): Promise<FoodGroup[]> {
         return await this.repository.getAll();
+    }
+
+    protected override onItemsLoaded(foodGroups: FoodGroup[]): void {
+        const select = document.getElementById(FoodGroupController.INGREDIENT_GROUP_SELECT_ID) as HTMLSelectElement | null;
+        
+        if (!select) return;
+
+        const previousValue = select.value;
+
+        select.querySelectorAll('option:not([value=""])').forEach((option) => option.remove());
+
+        foodGroups
+            .slice()
+            .sort((a, b) => a.getFoodGroup().localeCompare(b.getFoodGroup()))
+            .forEach((foodGroup) => {
+                const option = document.createElement("option");
+                option.value = foodGroup.getCode().getCode();
+                option.textContent = `${foodGroup.getCode().getCode()} - ${foodGroup.getFoodGroup()}`;
+                select.appendChild(option);
+            });
+
+        if (previousValue && select.querySelector(`option[value="${previousValue}"]`)) { 
+            select.value = previousValue;
+        }
     }
 
     protected async save(): Promise<void> {
