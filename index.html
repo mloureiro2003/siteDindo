@@ -27,7 +27,7 @@
         <nav>
           <button onclick="showSection('sec-recipe')">1. Receitas</button>
           <button onclick="showSection('sec-ingredient')">2. Ingredientes</button>
-          <button onclick="showSection('sec-type')">3. Tipos de Receitas</button>
+          <button onclick="showSection('sec-recipeType')">3. Tipos de Receitas</button>
           <button onclick="showSection('sec-foodGroup')">4. Grupos Alimentares</button>
           <button onclick="showSection('sec-unit')">5. Unidades de Medida</button>
           <button onclick="showSection('sec-report')">6. Relatórios / Imprimir</button>
@@ -156,19 +156,19 @@
         </section>
 
         <!-- 3. SEÇÃO DE TIPOS DE RECEITAS -->
-        <section id="sec-type" class="section-view">
+        <section id="sec-recipeType" class="section-view">
           <h2>Tipos de Receitas</h2>
 
-          <div id="type-register" class="sub-view">
+          <div id="recipeType-register" class="sub-view">
             <h3>Cadastrar Tipo de Receita</h3>
-            <form id="form-type">
+            <form id="form-recipeType">
               <div class="form-group">
-                <label for="type-code">Código (ex: ap):</label>
-                <input type="text" id="type-code" required>
+                <label for="recipeType-code">Código (ex: ap):</label>
+                <input type="text" id="recipeType-code" required>
               </div>
               <div class="form-group">
-                <label for="type-recipeType">Descrição (ex: Antepastos):</label>
-                <input type="text" id="type-recipeType" required>
+                <label for="recipeType-recipeType">Descrição (ex: Antepastos):</label>
+                <input type="text" id="recipeType-recipeType" required>
               </div>
               <button type="submit">Salvar Tipo</button>
             </form>
@@ -176,7 +176,7 @@
 
           <hr class="section-divider">
 
-          <div id="type-search" class="sub-view">
+          <div id="recipeType-search" class="sub-view">
             <h3>Lista de Tipos de Receita</h3>
             <table>
               <thead>
@@ -186,7 +186,7 @@
                   <th>Opções</th>
                 </tr>
               </thead>
-              <tbody id="table-types"></tbody>
+              <tbody id="table-recipeType"></tbody>
             </table>
           </div>
 

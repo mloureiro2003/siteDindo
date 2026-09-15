@@ -1,6 +1,6 @@
 import { Firestore } from "firebase/firestore";
 import { Code } from "../models/code.js";
-import { RecipeType } from "../models/recipeType"
+import { RecipeType } from "../models/recipeType.js"
 import { BaseRepository } from "./baseRepository.js";
 
 export class RecipeTypeRepository extends BaseRepository<RecipeType> {
@@ -19,7 +19,7 @@ export class RecipeTypeRepository extends BaseRepository<RecipeType> {
     protected mapToDatabase(item: RecipeType) {
         return {
             code: item.getCode().getCode(),
-            recipeType: item.getCode()
+            recipeType: item.getRecipeType()
         };
     }
 }
