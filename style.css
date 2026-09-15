@@ -1,0 +1,184 @@
+/* Reset e centralização da página */
+body { 
+font-family: Arial, sans-serif; 
+margin: 0; 
+padding: 20px 0;
+color: #2b2d42; 
+background-color: #f2f5f3; /* Fundo suave com tom levemente esverdeado */
+display: flex;
+justify-content: center;
+}
+
+/* Contêiner principal centralizado */
+.container {
+width: 90%;
+max-width: 900px;
+background: #ffffff;
+padding: 25px;
+border-radius: 8px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+border-top: 5px solid #bc4749; /* Detalhe em vermelho no topo */
+}
+
+header { 
+border-bottom: 2px solid #e0e5e2; 
+padding-bottom: 15px; 
+margin-bottom: 20px; 
+text-align: center; 
+}
+
+header h1 {
+color: #386641; /* Verde Erva-Mate escuro */
+margin-bottom: 15px;
+}
+
+/* Botões do Menu Principal */
+nav button { 
+margin: 4px; 
+padding: 10px 15px; 
+cursor: pointer; 
+background-color: #386641; /* Verde Erva-Mate */
+color: #ffffff;
+border: none;
+border-radius: 4px;
+font-weight: bold;
+transition: background-color 0.2s ease;
+}
+
+nav button:hover {
+background-color: #2c5234; /* Verde mais escuro ao passar o mouse */
+}
+
+.section-view { display: none; margin-top: 15px; }
+.active { display: block; }
+
+/* Divisor de seção na mesma tela */
+hr.section-divider {
+border: 0;
+height: 1px;
+background: #e0e5e2;
+margin: 30px 0;
+}
+
+/* Navegação das Sub-abas */
+.sub-nav { 
+margin-bottom: 15px; 
+text-align: center; 
+}
+
+.sub-nav button { 
+margin: 0 4px; 
+padding: 6px 14px; 
+background-color: #6a994e; /* Verde folha/erva claro */
+color: #ffffff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+}
+
+.sub-nav button:hover {
+background-color: #55823e;
+}
+
+/* Formulários e Ações Principais */
+form { 
+max-width: 100%; 
+margin: 0 auto 20px auto; 
+background: #f8faf8; 
+padding: 20px; 
+border-radius: 6px; 
+border: 1px solid #e2e8e4;
+}
+
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #386641; }
+.form-group input, .form-group select, .form-group textarea { 
+width: 100%; 
+padding: 8px; 
+box-sizing: border-box; 
+border: 1px solid #cccccc;
+border-radius: 4px;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+border-color: #bc4749; /* Foco do campo em vermelho */
+outline: none;
+}
+
+/* Botões de Submeter e Ação Secundária (Vermelho) */
+button[type="submit"] {
+background-color: #bc4749; /* Vermelho principal */
+color: white;
+border: none;
+padding: 10px 18px;
+border-radius: 4px;
+font-weight: bold;
+cursor: pointer;
+}
+
+button[type="submit"]:hover {
+background-color: #a71d2a; /* Vermelho mais escuro */
+}
+
+/* Tabelas e Alinhamento das Células */
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+table, th, td { border: 1px solid #dcdcdc; }
+th, td { padding: 10px; text-align: left; vertical-align: middle; }
+th { background-color: #e8efe9; color: #386641; } /* Cabeçalho da tabela esverdeado */
+
+.ingredient-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+
+/* ====================================================== */
+/* PADRONIZAÇÃO DE BOTÕES DAS TABELAS (EDITAR / EXCLUIR) */
+/* ====================================================== */
+table button,
+.ingredient-row button, 
+.btn-danger {
+box-sizing: border-box;
+width: 75px;             /* Define a mesma largura padrão para ambos os botões */
+height: 32px;            /* Define a mesma altura */
+padding: 0;
+font-size: 14px;
+font-weight: 500;
+border-radius: 4px;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+margin: 0 2px;
+border: none;
+transition: opacity 0.2s ease, background-color 0.2s ease;
+margin: 0 8px; /* Aumente este valor para dar mais espaço (ex: 8px, 10px ou 12px) */
+}
+
+/* Estilo padrão para botão de excluir/remover */
+.btn-danger,
+.ingredient-row button,
+table button.btn-danger {
+background-color: #bc4749;
+color: white;
+}
+
+.btn-danger:hover,
+.ingredient-row button:hover {
+background-color: #a71d2a;
+}
+
+/* Estilo padrão para botão de Editar em tabelas */
+table button:not(.btn-danger) {
+background-color: #e0e0e0;
+color: #2b2d42;
+border: 1px solid #cccccc;
+}
+
+table button:not(.btn-danger):hover {
+background-color: #d4d4d4;
+}
+
+/* CSS de Impressão */
+@media print {
+body { background: white; padding: 0; }
+.container { box-shadow: none; width: 100%; max-width: 100%; border-top: none; }
+header, nav, .sub-nav, button, form { display: none !important; }
+.section-view { display: block !important; }
+}

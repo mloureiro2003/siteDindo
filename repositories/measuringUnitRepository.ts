@@ -9,17 +9,17 @@ export class MeasuringUnitRepository extends BaseRepository<MeasuringUnit> {
     }
 
     protected getId(item: MeasuringUnit): string {
-        return item.getCode().getValue();
+        return item.getCode().getCode();
     }
 
     protected mapToDomain(id: string, data: any): MeasuringUnit {
-        return new MeasuringUnit(new Code(id), data.value);
+        return new MeasuringUnit(new Code(id), data.unit);
     }
 
     protected mapToDatabase(item: MeasuringUnit): any {
         return {
-            code: item.getCode().getValue(),
-            value: item.getValue()
+            code: item.getCode().getCode(),
+            unit: item.getUnit()
         };
     }
 }

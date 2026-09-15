@@ -9,18 +9,18 @@ export class IngredientRepository extends BaseRepository<Ingredient> {
     }
 
     protected getId(item: Ingredient): string {
-        return item.getCode().getValue();
+        return item.getCode().getCode();
     } 
     
     protected mapToDomain(id: string, data: any): Ingredient {
-        return new Ingredient(new Code(id), data.name, data.foodGroup, data.synonym)
+        return new Ingredient(new Code(id), data.ingredient, data.foodGroup, data.synonym)
     }
 
     protected mapToDatabase(item: Ingredient): any {
         return {
-            code: item.getCode().getValue(),
-            name: item.getName(),
-            FoodGroup: item.getFoodGroup(),
+            code: item.getCode().getCode(),
+            ingredient: item.getIngredient(),
+            foodGroup: item.getFoodGroup(),
             synonym: item.getSynonym()
         }
     }

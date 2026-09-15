@@ -4,13 +4,13 @@ import { FoodGroup } from "../models/foodGroup"
 export class Ingredient {
     constructor(
         private code: Code,
-        private name: string,
+        private ingredient: string,
         private foodGroup: FoodGroup, 
         private synonym?: string
     ){}
 
-    getName(): string {
-        return this.name;
+    getIngredient(): string {
+        return this.ingredient;
     }
 
     getFoodGroup(): FoodGroup {
@@ -25,8 +25,8 @@ export class Ingredient {
         return this.synonym ?? "";
     }
 
-    setName(newName: string): void {
-        this.name = newName;
+    setIngredient(newName: string): void {
+        this.ingredient = newName;
     }
 
     setCode(newCode: Code): void {

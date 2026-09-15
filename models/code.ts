@@ -1,11 +1,11 @@
 export class Code {
-  constructor(private value: string) {}
+  constructor(private code: string) {}
 
-  getValue(): string {
-    return this.value;
+  getCode(): string {
+    return this.code;
   }
 
-  setValue(newValue: string): void {
-    this.value = newValue;
+  setCode(newCode: string): void {
+    this.code = newCode;
   }
 }

@@ -9,17 +9,17 @@ export class RecipeTypeRepository extends BaseRepository<RecipeType> {
     }
 
     protected getId(item: RecipeType): string {
-        return item.getCode().getValue();
+        return item.getCode().getCode();
     }
 
     protected mapToDomain(id: string, data: any): RecipeType {
-        return new RecipeType(new Code(id), data.value);
+        return new RecipeType(new Code(id), data.recipeType);
     }
 
     protected mapToDatabase(item: RecipeType) {
         return {
-            code: item.getCode().getValue(),
-            value: item.getValue()
+            code: item.getCode().getCode(),
+            recipeType: item.getCode()
         };
     }
 }

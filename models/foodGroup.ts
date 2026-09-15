@@ -3,20 +3,20 @@ import { Code } from "../models/code.js";
 export class FoodGroup {
     constructor(
         private code: Code,
-        private value: string
+        private foodGroup: string
         
     ) {}
 
-    getValue(): string {
-        return this.value;
+    getFoodGroup(): string {
+        return this.foodGroup;
     }
 
     getCode(): Code {
         return this.code;
     }
 
-    setValue(newValue: string): void {
-        this.value = newValue;
+    setFoodGroup(newFoodGroup: string): void {
+        this.foodGroup = newFoodGroup;
     }
 
     setCode(newCode: Code): void {

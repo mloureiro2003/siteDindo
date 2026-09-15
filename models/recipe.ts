@@ -5,14 +5,14 @@ import { Code } from "../models/code.js";
 export class Recipe {
     constructor(
         private code: Code,
-        private name: string,
+        private recipe: string,
         private recipeType: RecipeType,
         private ingredients: IngredientRecipe[],
         private steps: string[]
     ) {}
 
-    getName(): string {
-        return this.name;
+    getRecipe(): string {
+        return this.recipe;
     }
 
     getCode(): Code {
@@ -35,8 +35,8 @@ export class Recipe {
         }
     }
 
-    setName(newName: string): void {
-        this.name = newName;
+    setRecipe(newName: string): void {
+        this.recipe = newName;
     }
 
     setCode(newCode: Code): void {

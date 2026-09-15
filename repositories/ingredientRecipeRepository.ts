@@ -1,27 +1,27 @@
 import { Firestore } from "firebase/firestore";
-import { Code } from "../models/code.js";
-import { Ingredient } from "../models/ingredient.js";
 import { BaseRepository } from "./baseRepository.js";
 import { IngredientRecipe } from "../models/ingredientRecipe.js";
+import { Code } from "../models/code.js";
 
 export class IngredientRecipeRepository extends BaseRepository<IngredientRecipe> {
     constructor (db: Firestore) {
         super(db, "ingredientRecipe");
     }
 
-    protected getId(item: IngredientRecipe): string {
-        return item.getIngredient().getCode().getValue();
+    protected getId(ingredientRecipe: IngredientRecipe): string {
+        return ingredientRecipe.getIngredient().getCode().getCode();
     }
 
     protected mapToDomain(data: any): IngredientRecipe {
-        return new IngredientRecipe(data.ingredient, data.quantity, data.unit);
+        return new IngredientRecipe(data.ingredient, data.quantity, data.unit)
     }
 
-    protected mapToDatabase(item: IngredientRecipe): any {
+    protected mapToDatabase(ingredientRecipe: IngredientRecipe): any {
         return {
-            ingredient: item.getIngredient(),
-            quantity: item.getQuantity(),
-            unit: item.getUnit()
+            code: ingredientRecipe.getCode(),
+            ingredient: ingredientRecipe.getIngredient(),
+            quantity: ingredientRecipe.getQuantity(),
+            unit: ingredientRecipe.getUnit()
         };
     }
 }

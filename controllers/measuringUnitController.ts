@@ -14,7 +14,7 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
 
   override async init(): Promise<void> {
     this.codeInput = document.getElementById("unit-code") as HTMLInputElement | null;
-    this.valueInput = document.getElementById("unit-value") as HTMLInputElement | null;
+    this.valueInput = document.getElementById("unit-unit") as HTMLInputElement | null;
     
     // Executa a inicialização padrão (eventos do form + renderização da tabela)
     await super.init();
@@ -22,8 +22,8 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
 
   protected getTableColumns() {
     return [
-      { getValue: (unit: MeasuringUnit) => unit.getCode().getValue() },
-      { getValue: (unit: MeasuringUnit) => unit.getValue() },
+      { getValue: (unit: MeasuringUnit) => unit.getCode().getCode() },
+      { getValue: (unit: MeasuringUnit) => unit.getUnit() },
     ];
   }
 
@@ -35,19 +35,19 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
     if (!this.codeInput || !this.valueInput) return;
 
     const codeValue = this.codeInput.value.trim().toUpperCase();
-    const description = this.valueInput.value.trim();
-    if (!codeValue || !description) return alert("Preencha todos os campos.");
+    const value = this.valueInput.value.trim();
+    if (!codeValue || !value) return alert("Preencha todos os campos.");
 
     const newCode = new Code(codeValue);
-    const newUnit = new MeasuringUnit(newCode, description)
+    const newUnit = new MeasuringUnit(newCode, value)
 
     try {
-      if (this.editingItem && this.editingItem.getCode().getValue() !== codeValue) {
+      if (this.editingItem && this.editingItem.getCode().getCode() !== codeValue) {
         await this.repository.delete(this.editingItem);
       }
 
       await this.repository.save(newUnit);
-      alert(`Unidade "${description}" salva com sucesso!`);
+      alert(`Unidade "${value}" salva com sucesso!`);
       
       this.cancelEdit();
       this.showViews();
@@ -61,8 +61,8 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
     if (!this.codeInput || !this.valueInput) return;
 
     this.editingItem = unit;
-    this.codeInput.value = unit.getCode().getValue();
-    this.valueInput.value = unit.getValue();
+    this.codeInput.value = unit.getCode().getCode();
+    this.valueInput.value = unit.getUnit();
 
     if (this.submitButton) {
       this.submitButton.textContent = "Atualizar Unidade";
@@ -73,7 +73,7 @@ export class MeasuringUnitController extends BaseController<MeasuringUnit> {
   }
 
   protected async remove(unit: MeasuringUnit): Promise<void> {
-    if (!confirm(`Excluir a unidade "${unit.getValue()}"?`)) return;
+    if (!confirm(`Excluir a unidade "${unit.getUnit()}"?`)) return;
 
     try {
       await this.repository.delete(unit);

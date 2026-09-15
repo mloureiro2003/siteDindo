@@ -3,19 +3,19 @@ import { Code } from "../models/code.js";
 export class MeasuringUnit {
     constructor(
         private code: Code,
-        private value: string
+        private unit: string
     ) {}
 
-    getValue(): string {
-        return this.value;
+    getUnit(): string {
+        return this.unit;
     }
 
     getCode(): Code {
         return this.code;
     }
 
-    setValue(newValue: string): void {
-        this.value = newValue;
+    setUnit(newValue: string): void {
+        this.unit = newValue;
     }
 
     setCode(newCode: Code): void {

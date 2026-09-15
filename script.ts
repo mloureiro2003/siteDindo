@@ -2,6 +2,8 @@ import { MeasuringUnitRepository } from "./repositories/measuringUnitRepository.
 import Quill from "quill";
 import { db } from "./services/firebase.js";
 import { MeasuringUnitController } from "./controllers/measuringUnitController.js";
+import { FoodGroupController } from "./controllers/foodGroupController.js";
+import { FoodGroupRepository } from "./repositories/foodGroupRepository.js";
 
 // Navigation Handlers
 function showSection(sectionId: string): void {
@@ -58,7 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Initialize all form handlers - each one now actually persists to Firestore
   const unitController = new MeasuringUnitController(new MeasuringUnitRepository(db));
+  const foodGroupController = new FoodGroupController(new FoodGroupRepository(db));
   void unitController.init();
+  void foodGroupController.init();
   //initIngredientForm();
   //initRecipeTypeForm();
   //initRecipeForm(quillEditor);

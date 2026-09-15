@@ -8,18 +8,18 @@ export class FoodGroupRepository  extends BaseRepository<FoodGroup> {
         super(db, "foodGroup");
     }
 
-    protected getId(item: FoodGroup): string {
-        return item.getCode().getValue();
+    protected getId(foodGroup: FoodGroup): string {
+        return foodGroup.getCode().getCode();
     }
 
-    protected mapToDomain(id: string, data: any): FoodGroup {
-        return new FoodGroup(new Code(id), data.description);
+    protected mapToDomain(code: string, data: any): FoodGroup {
+        return new FoodGroup(new Code(code), data.foodGroup);
     }
 
-    protected mapToDatabase(item: FoodGroup): any {
+    protected mapToDatabase(foodGroup: FoodGroup): any {
         return {
-            code: item.getCode().getValue(),
-            description: item.getValue()   
+            code: foodGroup.getCode().getCode(),
+            foodGroup: foodGroup.getFoodGroup()   
         }
     }
 }
