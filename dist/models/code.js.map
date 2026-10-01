@@ -1,0 +1,1 @@
+{"version":3,"file":"code.js","sourceRoot":"","sources":["../../src/models/code.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,IAAI;IACK;IAApB,YAAoB,IAAY;QAAZ,SAAI,GAAJ,IAAI,CAAQ;IAAG,CAAC;IAEpC,OAAO;QACL,OAAO,IAAI,CAAC,IAAI,CAAC;IACnB,CAAC;IAED,OAAO,CAAC,OAAe;QACrB,IAAI,CAAC,IAAI,GAAG,OAAO,CAAC;IACtB,CAAC;CACF"}
