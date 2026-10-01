@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
+    "module": "ES2022",
     "moduleResolution": "bundler",
-    "rootDir": "./",
-    "outDir": "./dist",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "rootDir": "src",
+    "outDir": "dist",
     "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "sourceMap": true
   },
-  "include": [
-    "script.ts", 
-    "controllers/**/*", 
-    "components/**/*",
-    "repositories/**/*", 
-    "models/**/*", 
-    "services/**/*"]
+  "include": ["src/**/*.ts"]
 }

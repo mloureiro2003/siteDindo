@@ -1,0 +1,138 @@
+:root {
+  --green-900: #2b4a31;
+  --green-700: #386641;
+  --green-500: #6a994e;
+  --green-100: #e6efd8;
+  --leaf: #a7c957;
+  --danger: #bc4749;
+  --ink: #1f2a22;
+  --muted: #5d6b60;
+  --line: #d4dccb;
+  --page: #f5f7f1;
+  --paper: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--page);
+  line-height: 1.5;
+}
+
+.container { max-width: 1000px; margin: 0 auto; padding: 0 1rem 3rem; }
+
+header { padding: 1.5rem 0 1rem; }
+header h1 { margin: 0 0 1rem; color: var(--green-900); }
+
+nav, .sub-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.sub-nav { margin-bottom: 1rem; }
+
+/* ---- buttons ---- */
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--green-700);
+  background: var(--green-700);
+  color: #fff;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+}
+button:hover { background: var(--green-900); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--leaf);
+  outline-offset: 1px;
+}
+
+nav button { background: var(--paper); color: var(--green-700); }
+nav button:hover { background: var(--green-100); }
+nav button.active { background: var(--green-700); color: #fff; }
+
+button.secondary { background: var(--paper); color: var(--green-700); }
+button.secondary:hover { background: var(--green-100); }
+
+.btn-delete { background: var(--danger); border-color: var(--danger); }
+.btn-delete:hover { background: #963638; }
+.btn-edit { background: var(--paper); color: var(--green-700); }
+.btn-edit:hover { background: var(--green-100); }
+
+/* ---- sections ---- */
+main { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem; }
+.section-view { display: none; }
+.section-view.active { display: block; }
+.section-view h2 { margin-top: 0; color: var(--green-900); }
+.section-divider { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+
+/* ---- forms ---- */
+.form-group { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
+label { font-weight: 600; }
+.field-hint { color: var(--muted); font-size: 0.85rem; }
+
+input[type="text"], input[type="number"], select, textarea {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  background: #fff;
+  max-width: 100%;
+}
+.invalid { border-color: var(--danger) !important; }
+
+#search-recipe { width: 100%; margin-bottom: 1rem; }
+
+.ingredient-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; align-items: center; }
+.ingredient-row .ingredient-code { width: 80px; }
+.ingredient-row .ingredient-select { flex: 2; min-width: 0; }
+.ingredient-row .ingredient-qtd { width: 100px; }
+.ingredient-row .ingredient-unit { flex: 1; min-width: 0; }
+
+#editor-recipe-steps { height: 150px; background: #fff; }
+form > h4 { margin: 1.5rem 0 0.5rem; }
+form > button[type="submit"] { margin-top: 0.5rem; }
+
+/* ---- tables ---- */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { background: var(--green-100); color: var(--green-900); }
+td.actions { white-space: nowrap; display: flex; gap: 0.4rem; }
+td.empty { color: var(--muted); text-align: center; padding: 1.5rem; }
+
+/* ---- reports ---- */
+#area-relatorio { margin-top: 1.25rem; }
+.report-item { border-top: 1px solid var(--line); padding: 1rem 0; }
+.report-item h4 { margin: 0 0 0.5rem; }
+.report-item small { color: var(--muted); font-weight: 400; }
+.report-steps { padding-left: 0.5rem; border-left: 3px solid var(--leaf); }
+.error { color: var(--danger); }
+
+/* ---- ss ---- */
+.ss { flex: 1; min-width: 0; }
+.ss-input { width: 100%; box-sizing: border-box; }
+.ss-list {
+  position: absolute; z-index: 20; left: 0; right: 0; top: 100%;
+  margin: 2px 0 0; padding: 0; list-style: none;
+  max-height: 220px; overflow-y: auto;
+  background: #fff; border: 1px solid #ccc; border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.ss-list li { padding: 6px 10px; cursor: pointer; }
+.ss-list li.active { background: #e8f0fe; }
+.ss-list li.selected { font-weight: bold; }
+.ss-list li.ss-empty { color: #888; cursor: default; }
+
+@media (max-width: 640px) {
+  .ingredient-row { flex-wrap: wrap; }
+  .ingredient-row .ingredient-select { flex-basis: 100%; order: -1; }
+  table { display: block; overflow-x: auto; }
+}
+
+/* ---- printing: only the report ---- */
+@media print {
+  body { background: #fff; }
+  header, .sub-nav, .section-view:not(#sec-report) { display: none !important; }
+  #sec-report { display: block !important; }
+  main { border: 0; padding: 0; }
+  .report-item { break-inside: avoid; }
+}

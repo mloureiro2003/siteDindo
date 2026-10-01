@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sitedindo</title>
 
+    <!-- The importmap must come before any module script. -->
     <script type="importmap">
     {
       "imports": {
@@ -16,213 +17,50 @@
     </script>
 
     <script type="module" src="./dist/script.js"></script>
-    <link href="./services/quill.snow.css" rel="stylesheet" />
-    <style>
-      /* Reset e centralização da página */
-      body { 
-        font-family: Arial, sans-serif; 
-        margin: 0; 
-        padding: 20px 0;
-        color: #2b2d42; 
-        background-color: #f2f5f3; /* Fundo suave com tom levemente esverdeado */
-        display: flex;
-        justify-content: center;
-      }
-
-      /* Contêiner principal centralizado */
-      .container {
-        width: 90%;
-        max-width: 900px;
-        background: #ffffff;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-        border-top: 5px solid #bc4749; /* Detalhe em vermelho no topo */
-      }
-
-      header { 
-        border-bottom: 2px solid #e0e5e2; 
-        padding-bottom: 15px; 
-        margin-bottom: 20px; 
-        text-align: center; 
-      }
-
-      header h1 {
-        color: #386641; /* Verde Erva-Mate escuro */
-        margin-bottom: 15px;
-      }
-
-      /* Botões do Menu Principal */
-      nav button { 
-        margin: 4px; 
-        padding: 10px 15px; 
-        cursor: pointer; 
-        background-color: #386641; /* Verde Erva-Mate */
-        color: #ffffff;
-        border: none;
-        border-radius: 4px;
-        font-weight: bold;
-        transition: background-color 0.2s ease;
-      }
-
-      nav button:hover {
-        background-color: #2c5234; /* Verde mais escuro ao passar o mouse */
-      }
-
-      .section-view { display: none; margin-top: 15px; }
-      .active { display: block; }
-
-      /* Divisor de seção na mesma tela */
-      hr.section-divider {
-        border: 0;
-        height: 1px;
-        background: #e0e5e2;
-        margin: 30px 0;
-      }
-
-      /* Navegação das Sub-abas */
-      .sub-nav { 
-        margin-bottom: 15px; 
-        text-align: center; 
-      }
-
-      .sub-nav button { 
-        margin: 0 4px; 
-        padding: 6px 14px; 
-        background-color: #6a994e; /* Verde folha/erva claro */
-        color: #ffffff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-
-      .sub-nav button:hover {
-        background-color: #55823e;
-      }
-
-      /* Formulários e Ações Principais */
-      form { 
-        max-width: 100%; 
-        margin: 0 auto 20px auto; 
-        background: #f8faf8; 
-        padding: 20px; 
-        border-radius: 6px; 
-        border: 1px solid #e2e8e4;
-      }
-
-      .form-group { margin-bottom: 12px; }
-      .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #386641; }
-      .form-group input, .form-group select, .form-group textarea { 
-        width: 100%; 
-        padding: 8px; 
-        box-sizing: border-box; 
-        border: 1px solid #cccccc;
-        border-radius: 4px;
-      }
-
-      .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-        border-color: #bc4749; /* Foco do campo em vermelho */
-        outline: none;
-      }
-
-      /* Botões de Submeter e Ação Secundária (Vermelho) */
-      button[type="submit"] {
-        background-color: #bc4749; /* Vermelho principal */
-        color: white;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 4px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      button[type="submit"]:hover {
-        background-color: #a71d2a; /* Vermelho mais escuro */
-      }
-
-      /* Tabelas */
-      table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-      table, th, td { border: 1px solid #dcdcdc; }
-      th, td { padding: 10px; text-align: left; }
-      th { background-color: #e8efe9; color: #386641; } /* Cabeçalho da tabela esverdeado */
-
-      .ingredient-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-
-      /* Botão de exclusão/remoção */
-      .ingredient-row button, .btn-danger {
-        background-color: #bc4749;
-        color: white;
-        border: none;
-        padding: 6px 10px;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-
-      /* CSS de Impressão */
-      @media print {
-        body { background: white; padding: 0; }
-        .container { box-shadow: none; width: 100%; max-width: 100%; border-top: none; }
-        header, nav, .sub-nav, button, form { display: none !important; }
-        .section-view { display: block !important; }
-      }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
       <header>
         <h1>Catálogo de Receitas</h1>
-        <!-- Menu Principal (opções 1 a 5) -->
         <nav>
-          <button onclick="showSection('sec-recipes')">1. Receitas</button>
-          <button onclick="showSection('sec-ingredients')">2. Ingredientes</button>
-          <button onclick="showSection('sec-types')">3. Tipos de Receitas</button>
-          <button onclick="showSection('sec-units')">4. Unidades de Medida</button>
-          <button onclick="showSection('sec-reports')">5. Relatórios / Imprimir</button>
+          <button type="button" class="active" data-section="sec-recipe">1. Receitas</button>
+          <button type="button" data-section="sec-ingredient">2. Ingredientes</button>
+          <button type="button" data-section="sec-recipeType">3. Tipos de Receitas</button>
+          <button type="button" data-section="sec-foodGroup">4. Grupos Alimentares</button>
+          <button type="button" data-section="sec-unit">5. Unidades de Medida</button>
+          <button type="button" data-section="sec-report">6. Relatórios / Imprimir</button>
         </nav>
       </header>
 
       <main>
-        <!-- 1. SEÇÃO DE RECEITAS -->
-        <section id="sec-recipes" class="section-view active">
+        <!-- 1. RECEITAS -->
+        <section id="sec-recipe" class="section-view active">
           <h2>Gestão de Receitas</h2>
 
-          <!-- Cadastrar Receita -->
-          <div id="rec-register" class="sub-view">
+          <div id="recipe-register" class="sub-view">
             <h3>Cadastrar Receita</h3>
             <form id="form-recipe">
               <div class="form-group">
-                <label for="rec-name">Nome da Receita:</label>
-                <input type="text" id="rec-name" required>
+                <label for="recipe-name">Nome da Receita:</label>
+                <input type="text" id="recipe-name" required>
               </div>
               <div class="form-group">
-                <label for="rec-type">Tipo de Receita:</label>
-                <select id="rec-type" required>
+                <label for="recipe-type">Tipo de Receita:</label>
+                <select id="recipe-type" required>
                   <option value="">Selecione um tipo...</option>
-                  <!-- Opções carregadas dinamicamente via JS -->
                 </select>
               </div>
 
               <h4>Ingredientes da Receita</h4>
-              <div id="list-ingredients-recipe">
-                <div class="ingredient-row">
-                  <input type="text" placeholder="Cód" style="width: 80px;" class="ing-cod">
-                  <select class="ing-select" style="flex: 2;" required>
-                    <option value="">Selecione o ingrediente...</option>
-                  </select>
-                  <input type="number" step="0.01" placeholder="Qtd" style="width: 100px;" class="ing-qtd" required>
-                  <select class="ing-unit" style="flex: 1;" required>
-                    <option value="">Unidade...</option>
-                  </select>
-                  <button type="button" onclick="removeIngredientRow(this)">X</button>
-                </div>
-              </div>
-              <button type="button" onclick="addIngredientRow()">+ Adicionar Ingrediente</button>
-              <br><br>
+              <!-- Rows are created by RecipeController -->
+              <div id="list-ingredients-recipe"></div>
+              <button type="button" id="btn-add-ingredient">+ Adicionar Ingrediente</button>
 
               <h4>Modo de Preparo / Passo a Passo</h4>
               <div class="form-group">
-                <!-- Container onde o Quill vai renderizar o editor -->
-                <div id="editor-recipe-steps" style="height: 150px; background: #fff;"></div>
+                <div id="editor-recipe-steps"></div>
               </div>
 
               <button type="submit">Salvar Receita</button>
@@ -231,52 +69,47 @@
 
           <hr class="section-divider">
 
-          <!-- Pesquisar/Excluir Receita -->
-          <div id="rec-search" class="sub-view">
+          <div id="recipe-search" class="sub-view">
             <h3>Pesquisar Receitas</h3>
-            <input type="text" id="search-recipe" placeholder="Buscar por nome ou tipo..." oninput="filtrarReceitas()">
+            <input type="text" id="search-recipe" placeholder="Buscar por código, nome ou tipo...">
             <table>
               <thead>
                 <tr>
                   <th>Nome</th>
                   <th>Tipo</th>
                   <th>Qtd. Ingredientes</th>
-                  <th>Ações</th>
+                  <th>Opções</th>
                 </tr>
               </thead>
-              <tbody id="table-recipes">
-                <!-- Linhas inseridas via JS -->
-              </tbody>
+              <tbody id="table-recipe"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- 2. SEÇÃO DE INGREDIENTES -->
-        <section id="sec-ingredients" class="section-view">
+        <!-- 2. INGREDIENTES -->
+        <section id="sec-ingredient" class="section-view">
           <h2>Gestão de Ingredientes</h2>
 
-          <div id="ing-register" class="sub-view">
+          <div id="ingredient-register" class="sub-view">
             <h3>Cadastrar Ingrediente</h3>
             <form id="form-ingredient">
-              <input type="hidden" id="ing-id">
               <div class="form-group">
-                <label for="ing-name">Nome do Ingrediente:</label>
-                <input type="text" id="ing-name" required>
+                <label for="ingredient-ingredient">Nome do Ingrediente:</label>
+                <input type="text" id="ingredient-ingredient" required>
               </div>
               <div class="form-group">
-                <label for="ing-synonym">Sinônimo:</label>
-                <input type="text" id="ing-synonym">
+                <label for="ingredient-synonym">Sinônimo:</label>
+                <input type="text" id="ingredient-synonym">
               </div>
               <div class="form-group">
-                <label for="ing-group">Classificação / Grupo Alimentar:</label>
-                <select id="ing-group" required>
+                <label for="ingredient-foodGroup">Classificação / Grupo Alimentar:</label>
+                <select id="ingredient-foodGroup" required>
                   <option value="">Selecione o grupo...</option>
-                  <!-- Preenchido via JS (Ex: CB - carne bovina) -->
                 </select>
               </div>
               <div class="form-group">
-                <label for="ing-specifications">Especificação / Observação:</label>
-                <textarea id="ing-specifications" rows="3"></textarea>
+                <label for="ingredient-specifications">Especificação / Observação:</label>
+                <textarea id="ingredient-specifications" rows="3"></textarea>
               </div>
               <button type="submit">Salvar Ingrediente</button>
             </form>
@@ -284,7 +117,7 @@
 
           <hr class="section-divider">
 
-          <div id="ing-search" class="sub-view">
+          <div id="ingredient-search" class="sub-view">
             <h3>Lista de Ingredientes</h3>
             <table>
               <thead>
@@ -293,29 +126,29 @@
                   <th>Sinônimo</th>
                   <th>Grupo</th>
                   <th>Especificação</th>
-                  <th>Ações</th>
+                  <th>Opções</th>
                 </tr>
               </thead>
-              <tbody id="table-ingrediets"></tbody>
+              <tbody id="table-ingredients"></tbody>
             </table>
           </div>
-
         </section>
 
-        <!-- 3. SEÇÃO DE TIPOS DE RECEITAS -->
-        <section id="sec-types" class="section-view">
+        <!-- 3. TIPOS DE RECEITAS -->
+        <section id="sec-recipeType" class="section-view">
           <h2>Tipos de Receitas</h2>
 
-          <div id="type-register" class="sub-view">
+          <div id="recipeType-register" class="sub-view">
             <h3>Cadastrar Tipo de Receita</h3>
-            <form id="form-type">
+            <form id="form-recipeType">
               <div class="form-group">
-                <label for="type-code">Código (ex: ap):</label>
-                <input type="text" id="type-code" required>
+                <label for="recipeType-code">Código:</label>
+                <input type="text" id="recipeType-code" maxlength="8" required>
+                <small class="field-hint">Sugerido automaticamente a partir da descrição; edite se quiser outro.</small>
               </div>
               <div class="form-group">
-                <label for="type-description">Descrição (ex: Antepastos):</label>
-                <input type="text" id="type-description" required>
+                <label for="recipeType-recipeType">Descrição (ex: Antepastos):</label>
+                <input type="text" id="recipeType-recipeType" required>
               </div>
               <button type="submit">Salvar Tipo</button>
             </form>
@@ -323,36 +156,77 @@
 
           <hr class="section-divider">
 
-          <div id="type-search" class="sub-view">
+          <div id="recipeType-search" class="sub-view">
             <h3>Lista de Tipos de Receita</h3>
             <table>
               <thead>
                 <tr>
                   <th>Código</th>
                   <th>Descrição</th>
-                  <th>Ações</th>
+                  <th>Opções</th>
                 </tr>
               </thead>
-              <tbody id="table-types"></tbody>
+              <tbody id="table-recipeType"></tbody>
             </table>
           </div>
-
         </section>
 
-        <!-- 4. SEÇÃO DE UNIDADES DE MEDIDA -->
-        <section id="sec-units" class="section-view">
+        <!-- 4. GRUPOS ALIMENTARES -->
+        <section id="sec-foodGroup" class="section-view">
+          <h2>Grupos Alimentares</h2>
+
+          <div id="foodGroup-register" class="sub-view">
+            <h3>Cadastrar Grupo Alimentar</h3>
+            <form id="form-foodGroup">
+              <div class="form-group">
+                <label for="foodGroup-code">Código:</label>
+                <input type="text" id="foodGroup-code" maxlength="8" required>
+                <small class="field-hint">Sugerido automaticamente a partir da descrição; edite se quiser outro.</small>
+              </div>
+              <div class="form-group">
+                <label for="foodGroup-foodGroup">Descrição (ex: Carne Bovina):</label>
+                <input type="text" id="foodGroup-foodGroup" required>
+              </div>
+              <button type="submit">Salvar Grupo Alimentar</button>
+            </form>
+          </div>
+
+          <hr class="section-divider">
+
+          <div id="foodGroup-search" class="sub-view">
+            <h3>Lista de Grupos Alimentares</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Descrição</th>
+                  <th>Opções</th>
+                </tr>
+              </thead>
+              <tbody id="table-foodGroup"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. UNIDADES DE MEDIDA -->
+        <section id="sec-unit" class="section-view">
           <h2>Unidades de Medida</h2>
 
           <div id="unit-register" class="sub-view">
             <h3>Cadastrar Unidade de Medida</h3>
             <form id="form-unit">
+              <label>
+                <input type="checkbox" id="unit-quantifiable" checked>
+                Exige quantidade
+              </label>
               <div class="form-group">
-                <label for="unit-code">Código (ex: ml):</label>
-                <input type="text" id="unit-code" required>
+                <label for="unit-code">Código:</label>
+                <input type="text" id="unit-code" maxlength="8" required>
+                <small class="field-hint">Sugerido automaticamente a partir da descrição; edite se quiser outro.</small>
               </div>
               <div class="form-group">
-                <label for="unit-description">Descrição (ex: mililitros):</label>
-                <input type="text" id="unit-description" required>
+                <label for="unit-unit">Descrição (ex: mililitros):</label>
+                <input type="text" id="unit-unit" required>
               </div>
               <button type="submit">Salvar Unidade</button>
             </form>
@@ -367,34 +241,38 @@
                 <tr>
                   <th>Código</th>
                   <th>Descrição</th>
-                  <th>Ações</th>
+                  <th>Opções</th>
                 </tr>
               </thead>
               <tbody id="table-units"></tbody>
             </table>
           </div>
-
         </section>
 
-        <!-- 5. SEÇÃO DE RELATÓRIOS / IMPRIMIR -->
-        <section id="sec-reports" class="section-view">
+        <!-- 6. RELATÓRIOS / IMPRIMIR -->
+        <section id="sec-report" class="section-view">
           <h2>Relatórios e Impressão</h2>
           <div class="sub-nav">
-            <button onclick="generateReport('receita')">Por Receita</button>
-            <button onclick="generateReport('tipo')">Por Tipo</button>
-            <button onclick="generateReport('ingrediente')">Por Ingredientes</button>
-            <button onclick="generateReport('quantidade')">Por Quantidades/Unidades</button>
+            <button type="button" data-report="receita">Por Receita</button>
+            <button type="button" data-report="tipo">Por Tipo</button>
+            <button type="button" data-report="ingrediente">Por Ingredientes</button>
+            <button type="button" data-report="quantidade">Por Quantidades/Unidades</button>
+            <button type="button" id="btn-print" class="secondary">🖨️ Imprimir Relatório</button>
           </div>
 
-          <button onclick="window.print()">🖨️ Imprimir Relatório</button>
+          <!-- Filtro do relatório: preenchido pelo ReportController ao escolher um relatório -->
+          <div id="report-filter" class="form-group" hidden>
+            <label for="report-filter-item" id="report-filter-label">Filtrar:</label>
+            <select id="report-filter-item">
+              <option value="">Todos</option>
+            </select>
+          </div>
 
-          <div id="area-relatorio" style="margin-top: 20px;">
+          <div id="area-relatorio">
             <p><em>Selecione um dos relatórios acima para visualizar e imprimir.</em></p>
           </div>
         </section>
       </main>
     </div>
-    
-    <div id="app"></div>
   </body>
 </html>
